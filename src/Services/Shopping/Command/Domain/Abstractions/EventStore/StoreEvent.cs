@@ -10,5 +10,5 @@ public record StoreEvent<TAggregate, TId>(TId AggregateId, string EventType, IDo
     where TId : IIdentifier, new()
 {
     public static StoreEvent<TAggregate, TId> Create(TAggregate aggregate, IDomainEvent @event)
-        => new(aggregate.Id, @event.GetType().Name, @event, aggregate.Version, @event.Timestamp);
+        => new(aggregate.Id, @event.GetType().Name, @event, (Version)@event.Version, @event.Timestamp);
 }
