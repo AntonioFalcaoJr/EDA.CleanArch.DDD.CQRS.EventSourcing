@@ -1,9 +1,13 @@
 ﻿using Domain.Abstractions.Aggregates;
+using Domain.Abstractions.Identities;
+using Version = Domain.ValueObjects.Version;
 
 namespace Domain.Abstractions.EventStore;
 
-public record Snapshot(Guid AggregateId, string AggregateType, IAggregateRoot Aggregate, ulong Version, DateTimeOffset Timestamp)
+public record Snapshot<TAggregate, TId>(TId AggregateId, TAggregate Aggregate, Version Version, DateTimeOffset Timestamp)
+    where TAggregate : IAggregateRoot<TId>
+    where TId : IIdentifier, new()
 {
-    public static Snapshot Create(IAggregateRoot aggregate, StoreEvent @event)
-        => new(aggregate.Id, aggregate.GetType().Name, aggregate, @event.Version, @event.Timestamp);
+    public static Snapshot<TAggregate, TId> Create(TAggregate aggregate, StoreEvent<TAggregate, TId> @event)
+        => new(aggregate.Id, aggregate, @event.Version, @event.Timestamp);
 }
