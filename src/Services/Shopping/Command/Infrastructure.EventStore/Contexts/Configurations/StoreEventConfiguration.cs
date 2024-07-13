@@ -7,13 +7,12 @@ using Domain.Aggregates.ShoppingCarts;
 using Infrastructure.EventStore.Contexts.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Version = Domain.ValueObjects.Version;
 
 namespace Infrastructure.EventStore.Contexts.Configurations;
 
-public class CartStoreEventConfiguration : StoreEventConfiguration<ShoppingCart, CartId>;
-
+public class ShoppingCartStoreEventConfiguration : StoreEventConfiguration<ShoppingCart, CartId>;
 public class CheckoutStoreEventConfiguration : StoreEventConfiguration<Checkout, CheckoutId>;
-
 public class ProductStoreEventConfiguration : StoreEventConfiguration<Product, ProductId>;
 
 public abstract class StoreEventConfiguration<TAggregate, TId> : IEntityTypeConfiguration<StoreEvent<TAggregate, TId>>
@@ -28,7 +27,7 @@ public abstract class StoreEventConfiguration<TAggregate, TId> : IEntityTypeConf
 
         builder
             .Property(@event => @event.AggregateId)
-            .HasConversion<IdentifierConverter<TId>>()
+            .HasConversion<Guid>(id => id, guid => GuidIdentifier.New<TId>(guid))
             .IsRequired();
 
         builder
@@ -48,7 +47,7 @@ public abstract class StoreEventConfiguration<TAggregate, TId> : IEntityTypeConf
 
         builder
             .Property(@event => @event.Version)
-            .HasConversion<VersionConverter>()
+            .HasConversion<ushort>(version => version, number => Version.Number(number))
             .IsRequired();
     }
 }

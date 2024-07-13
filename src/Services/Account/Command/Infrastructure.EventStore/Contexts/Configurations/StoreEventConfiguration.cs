@@ -1,41 +1,46 @@
+using Domain.Abstractions.Aggregates;
 using Domain.Abstractions.EventStore;
+using Domain.Abstractions.Identities;
 using Infrastructure.EventStore.Contexts.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Version = Domain.ValueObjects.Version;
 
 namespace Infrastructure.EventStore.Contexts.Configurations;
 
-public class StoreEventConfiguration : IEntityTypeConfiguration<StoreEvent>
+public abstract class StoreEventConfiguration<TAggregate, TId> : IEntityTypeConfiguration<StoreEvent<TAggregate, TId>>
+    where TAggregate : AggregateRoot<TId>
+    where TId : GuidIdentifier, new()
 {
-    public void Configure(EntityTypeBuilder<StoreEvent> builder)
+    public void Configure(EntityTypeBuilder<StoreEvent<TAggregate, TId>> builder)
     {
-        builder.HasKey(storeEvent => new { storeEvent.Version, storeEvent.AggregateId });
+        builder.ToTable($"{typeof(TAggregate).Name}StoreEvents");
+
+        builder.HasKey(@event => new { @event.Version, @event.AggregateId });
 
         builder
-            .Property(storeEvent => storeEvent.Version)
+            .Property(@event => @event.AggregateId)
+            .HasConversion<Guid>(id => id, guid => GuidIdentifier.New<TId>(guid))
             .IsRequired();
 
         builder
-            .Property(storeEvent => storeEvent.AggregateId)
-            .IsRequired();
-
-        builder
-            .Property(storeEvent => storeEvent.AggregateType)
-            .HasMaxLength(30)
-            .IsRequired();
-
-        builder
-            .Property(storeEvent => storeEvent.EventType)
-            .HasMaxLength(50)
-            .IsRequired();
-
-        builder
-            .Property(storeEvent => storeEvent.Timestamp)
-            .IsRequired();
-
-        builder
-            .Property(storeEvent => storeEvent.Event)
+            .Property(@event => @event.Event)
             .HasConversion<EventConverter>()
+            .IsRequired();
+
+        builder
+            .Property(@event => @event.EventType)
+            .HasMaxLength(50)
+            .IsUnicode(false)
+            .IsRequired();
+
+        builder
+            .Property(@event => @event.Timestamp)
+            .IsRequired();
+
+        builder
+            .Property(@event => @event.Version)
+            .HasConversion<ushort>(version => version, number => Version.Number(number))
             .IsRequired();
     }
 }
