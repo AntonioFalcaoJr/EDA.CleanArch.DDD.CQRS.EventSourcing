@@ -20,7 +20,7 @@ public class CatalogingGrpcCommandService(ISender sender) : CatalogingCommandSer
 
         CreateCatalog create = new(appId, (Title)cmd.Title, (Description)cmd.Description /*, cmd.ImageUrl*/);
         var catalogId = await sender.Send(create, context.CancellationToken);
-        return Response.Success<Identifier>(new() { Value = catalogId });
+        return Response.Created(catalogId );
     }
 
     public override async Task<CommandResponse> DeleteCatalog(DeleteCatalogCommand cmd, ServerCallContext context)
@@ -62,7 +62,8 @@ public class CatalogingGrpcCommandService(ISender sender) : CatalogingCommandSer
 public static class Response
 {
     public static CommandResponse Accepted() => new() { Accepted = new() };
+    public static CommandResponse Created(string id) => new() { Created = new() { Id = new() { Id = id } } };
     public static CommandResponse NoContent() => new() { NoContent = new() };
     public static CommandResponse NotFound() => new() { NotFound = new() };
-    public static CommandResponse Success<T>(T message) where T : IMessage => new() { Success = Any.Pack(message) };
+    public static CommandResponse Ok() => new() { Ok = new() };
 }
