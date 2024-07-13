@@ -7,7 +7,7 @@ namespace WebAPI.Abstractions;
 public record PagedResult<TProjection> : IPagedResult<TProjection>
     where TProjection : IMessage, new()
 {
-    public IReadOnlyCollection<TProjection> Items { get; init; } = new List<TProjection>();
+    public IEnumerable<TProjection> Items { get; init; } = new List<TProjection>();
     public Page Page { get; init; } = new();
 
     public static implicit operator PagedResult<TProjection>(PagedResult result)
