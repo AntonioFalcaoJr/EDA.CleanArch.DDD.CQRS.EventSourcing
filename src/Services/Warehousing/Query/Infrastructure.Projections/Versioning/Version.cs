@@ -1,4 +1,4 @@
-﻿namespace Domain.ValueObjects;
+﻿namespace Infrastructure.Projections.Versioning;
 
 public record Version
 {
