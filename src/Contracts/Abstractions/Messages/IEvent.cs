@@ -1,9 +1,10 @@
 ﻿using MassTransit;
+using MediatR;
 
 namespace Contracts.Abstractions.Messages;
 
 [ExcludeFromTopology]
-public interface IEvent : IMessage;
+public interface IEvent : IMessage, IRequest;
 
 [ExcludeFromTopology]
 public interface IDelayedEvent : IEvent;
@@ -11,7 +12,7 @@ public interface IDelayedEvent : IEvent;
 [ExcludeFromTopology]
 public interface IVersionedEvent : IEvent
 {
-    string Version { get; }
+    ulong Version { get; }
 }
 
 [ExcludeFromTopology]
