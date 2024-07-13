@@ -2,8 +2,9 @@
 
 namespace Domain.Abstractions;
 
-public abstract class DomainException<TException>(string message) : 
-    InvalidOperationException(message) 
+public interface IDomainException;
+
+public abstract class DomainException<TException>(string message) : InvalidOperationException(message), IDomainException
     where TException : DomainException<TException>, new()
 {
     public static TException New() => new();
