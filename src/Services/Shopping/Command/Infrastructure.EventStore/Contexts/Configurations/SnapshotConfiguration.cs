@@ -7,13 +7,12 @@ using Domain.Aggregates.ShoppingCarts;
 using Infrastructure.EventStore.Contexts.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Version = Domain.ValueObjects.Version;
 
 namespace Infrastructure.EventStore.Contexts.Configurations;
 
 public class CartSnapshotConfiguration : SnapshotConfiguration<ShoppingCart, CartId>;
-
 public class CheckoutSnapshotConfiguration : SnapshotConfiguration<Checkout, CheckoutId>;
-
 public class ProductSnapshotConfiguration : SnapshotConfiguration<Product, ProductId>;
 
 public abstract class SnapshotConfiguration<TAggregate, TId> : IEntityTypeConfiguration<Snapshot<TAggregate, TId>>
@@ -33,7 +32,7 @@ public abstract class SnapshotConfiguration<TAggregate, TId> : IEntityTypeConfig
 
         builder
             .Property(snapshot => snapshot.AggregateId)
-            .HasConversion<IdentifierConverter<TId>>()
+            .HasConversion<Guid>(id => id, guid => GuidIdentifier.New<TId>(guid))
             .IsRequired();
 
         builder.Property(snapshot => snapshot.Timestamp)
@@ -41,7 +40,7 @@ public abstract class SnapshotConfiguration<TAggregate, TId> : IEntityTypeConfig
 
         builder
             .Property(snapshot => snapshot.Version)
-            .HasConversion<VersionConverter>()
+            .HasConversion<ushort>(version => version, number => Version.Number(number))
             .IsRequired();
     }
 }

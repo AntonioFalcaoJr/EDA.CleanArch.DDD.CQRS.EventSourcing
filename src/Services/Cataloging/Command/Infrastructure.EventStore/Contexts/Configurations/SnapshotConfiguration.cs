@@ -7,6 +7,7 @@ using Domain.Aggregates.Products;
 using Infrastructure.EventStore.Contexts.Converters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Version = Domain.ValueObjects.Version;
 
 namespace Infrastructure.EventStore.Contexts.Configurations;
 
@@ -20,7 +21,7 @@ public abstract class SnapshotConfiguration<TAggregate, TId> : IEntityTypeConfig
     where TAggregate : AggregateRoot<TId>
     where TId : GuidIdentifier, new()
 {
-    public void Configure(EntityTypeBuilder<Snapshot<TAggregate, TId>> builder)
+    public virtual void Configure(EntityTypeBuilder<Snapshot<TAggregate, TId>> builder)
     {
         builder.ToTable($"{typeof(TAggregate).Name}Snapshots");
 
@@ -33,7 +34,7 @@ public abstract class SnapshotConfiguration<TAggregate, TId> : IEntityTypeConfig
 
         builder
             .Property(snapshot => snapshot.AggregateId)
-            .HasConversion<IdentifierConverter<TId>>()
+            .HasConversion<Guid>(id => id, guid => GuidIdentifier.New<TId>(guid))
             .IsRequired();
 
         builder.Property(snapshot => snapshot.Timestamp)
@@ -41,7 +42,7 @@ public abstract class SnapshotConfiguration<TAggregate, TId> : IEntityTypeConfig
 
         builder
             .Property(snapshot => snapshot.Version)
-            .HasConversion<VersionConverter>()
+            .HasConversion<ushort>(version => version, number => Version.Number(number))
             .IsRequired();
     }
 }
