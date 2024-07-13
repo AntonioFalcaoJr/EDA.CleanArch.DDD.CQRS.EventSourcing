@@ -1,4 +1,6 @@
-﻿namespace Domain.ValueObjects;
+﻿using static Domain.Exceptions;
+
+namespace Domain.ValueObjects;
 
 public record Version
 {
