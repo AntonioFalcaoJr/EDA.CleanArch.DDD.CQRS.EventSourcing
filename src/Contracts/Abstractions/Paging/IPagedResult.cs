@@ -5,6 +5,6 @@ namespace Contracts.Abstractions.Paging;
 [ExcludeFromTopology]
 public interface IPagedResult<out TProjection>
 {
-    IReadOnlyCollection<TProjection> Items { get; }
+    IEnumerable<TProjection> Items { get; }
     Page Page { get; }
 }
