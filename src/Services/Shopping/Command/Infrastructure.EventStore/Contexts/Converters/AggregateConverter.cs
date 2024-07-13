@@ -23,6 +23,7 @@ public class AggregateConverter<TAggregate, TId>() :
 
         jsonSerializerSettings.Converters.Add(new DateOnlyJsonConverter());
         jsonSerializerSettings.Converters.Add(new ExpirationDateOnlyJsonConverter());
+        jsonSerializerSettings.Converters.Add(new CurrencyJsonConverter());
 
         return jsonSerializerSettings;
     }
@@ -37,6 +38,7 @@ public class AggregateConverter<TAggregate, TId>() :
 
         jsonDeserializerSettings.Converters.Add(new DateOnlyJsonConverter());
         jsonDeserializerSettings.Converters.Add(new ExpirationDateOnlyJsonConverter());
+        jsonDeserializerSettings.Converters.Add(new CurrencyJsonConverter());
 
         return jsonDeserializerSettings;
     }
