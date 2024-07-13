@@ -9,6 +9,6 @@ public interface IAggregateRoot<out TId> : IEntity<TId>
     where TId : IIdentifier, new()
 {
     Version Version { get; }
-    void LoadFromHistory(IEnumerable<IDomainEvent> events);
-    bool TryDequeueEvent(out IDomainEvent? @event);
+    void LoadFromStream(List<IDomainEvent> events);
+    bool TryDequeueEvent(out IDomainEvent @event);
 }
