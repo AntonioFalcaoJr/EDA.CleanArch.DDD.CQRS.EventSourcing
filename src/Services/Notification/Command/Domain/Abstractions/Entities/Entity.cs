@@ -1,18 +1,14 @@
-﻿using FluentValidation;
-using Newtonsoft.Json;
+﻿namespace Domain.Abstractions.Entities;
 
-namespace Domain.Abstractions.Entities;
-
-public abstract class Entity<TValidator> : IEntity
-    where TValidator : IValidator, new()
+public abstract class Entity<TId> : IEntity<TId>
+    where TId : notnull, new()
 {
-    [JsonIgnore]
-    private readonly TValidator _validator = new();
-
-    public Guid Id { get; protected set; }
+    public TId Id { get; protected set; } = new();
     public bool IsDeleted { get; protected set; }
 
-    protected void Validate()
-        => _validator.Validate(ValidationContext<IEntity>.CreateWithOptions(this, strategy
-            => strategy.ThrowOnFailures()));
+    public static bool operator ==(Entity<TId> left, Entity<TId> right) => left.Id.Equals(right.Id);
+    public static bool operator !=(Entity<TId> left, Entity<TId> right) => !left.Id.Equals(right.Id);
+    
+    public override bool Equals(object? obj) => obj is Entity<TId> entity && Id.Equals(entity.Id);
+    public override int GetHashCode() => HashCode.Combine(Id);
 }
