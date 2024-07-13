@@ -1,6 +1,5 @@
 using Application.Abstractions;
 using Application.Abstractions.Gateways;
-using Domain.Abstractions.EventStore;
 using Infrastructure.EventStore.Contexts;
 using Infrastructure.EventStore.DependencyInjection.Options;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +14,6 @@ public static class ServiceCollectionExtensions
     public static void AddEventStore(this IServiceCollection services)
     {
         services.AddScoped<IEventStoreGateway, EventStoreGateway>();
-        services.AddScoped<IEventStoreRepository, EventStoreRepository>();
         services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddDbContextPool<DbContext, EventStoreDbContext>((provider, builder) =>

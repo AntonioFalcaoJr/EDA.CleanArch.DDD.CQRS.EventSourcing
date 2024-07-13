@@ -16,7 +16,6 @@ public static class ServiceCollectionExtensions
             .ConfigureOptions()
             .AddScoped<IUnitOfWork, UnitOfWork>()
             .AddScoped<IEventStoreGateway, EventStoreGateway>()
-            .AddScoped<IEventStoreGateway, EventStoreGateway>()
             .AddDbContextPool<DbContext, EventStoreDbContext>((provider, builder) =>
             {
                 var configuration = provider.GetRequiredService<IConfiguration>();
@@ -45,9 +44,8 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection ConfigureOptions<TOptions>(this IServiceCollection services)
         where TOptions : class
         => services
-            .AddOptions<TOptions>()
+            .AddOptionsWithValidateOnStart<TOptions>()
             .BindConfiguration(typeof(TOptions).Name)
             .ValidateDataAnnotations()
-            .ValidateOnStart()
             .Services;
 }

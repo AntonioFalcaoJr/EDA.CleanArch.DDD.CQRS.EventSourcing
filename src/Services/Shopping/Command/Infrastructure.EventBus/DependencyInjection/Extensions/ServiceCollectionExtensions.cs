@@ -14,7 +14,7 @@ namespace Infrastructure.EventBus.DependencyInjection.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    private const string SchedulerQueueName = "scheduler";
+    private const string SchedulerQueueName = "event-scheduler";
 
     public static IServiceCollection AddMessageBusInfrastructure(this IServiceCollection services)
         => services
@@ -69,8 +69,8 @@ public static class ServiceCollectionExtensions
                     bus.ConnectConsumeObserver(new LoggingConsumeObserver());
                     bus.ConnectPublishObserver(new LoggingPublishObserver());
                     bus.ConnectSendObserver(new LoggingSendObserver());
-                    
-                    bus.UsePublishFilter(typeof(TraceIdentifierFilter<>),context);
+
+                    bus.UsePublishFilter(typeof(TraceIdentifierFilter<>), context);
 
                     bus.ConfigureEventReceiveEndpoints(context);
                     bus.ConfigureEndpoints(context);
@@ -89,9 +89,8 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection ConfigureOptions<TOptions>(this IServiceCollection services)
         where TOptions : class
         => services
-            .AddOptions<TOptions>()
+            .AddOptionsWithValidateOnStart<TOptions>()
             .BindConfiguration(typeof(TOptions).Name)
             .ValidateDataAnnotations()
-            .ValidateOnStart()
             .Services;
 }

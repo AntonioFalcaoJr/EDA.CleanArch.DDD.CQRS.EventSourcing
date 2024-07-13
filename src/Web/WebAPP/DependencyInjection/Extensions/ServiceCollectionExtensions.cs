@@ -14,22 +14,23 @@ public static class ServiceCollectionExtensions
 {
     public static void AddApis(this IServiceCollection services)
     {
-        services.AddApiClient<ICreateCatalogApi>();
-        services.AddApiClient<IChangeTitleApi>();
-        services.AddApiClient<IChangeDescriptionApi>();
-        services.AddApiClient<IDeleteCatalogApi>();
-        services.AddApiClient<IListCatalogsApi>();
-        services.AddApiClient<IListCatalogItemsApi>();
-        services.AddApiClient<IAddCatalogItemApi>();
-        services.AddApiClient<ISearchProductsApi>();
+        services
+            .AddApiClient<ICreateCatalogApi>()
+            .AddApiClient<IChangeTitleApi>()
+            .AddApiClient<IChangeDescriptionApi>()
+            .AddApiClient<IDeleteCatalogApi>()
+            .AddApiClient<IListCatalogsApi>()
+            .AddApiClient<IListCatalogItemsApi>()
+            .AddApiClient<IAddCatalogItemApi>()
+            .AddApiClient<ISearchProductsApi>();
 
         // TODO: It is necessary given the incompetence of the Refit team. Remove when the issue is fixed. 
         services.AddScoped<HttpRequestExceptionHandler>();
     }
 
-    private static void AddApiClient<TApi>(this IServiceCollection services) where TApi : class
-    {
-        services
+    private static IServiceCollection AddApiClient<TApi>(this IServiceCollection services)
+        where TApi : class
+        => services
             .AddRefitClient<TApi>()
             .AddCorrelationIdForwarding()
             .ConfigureHttpClient((provider, client) =>
@@ -47,8 +48,8 @@ public static class ServiceCollectionExtensions
                     HttpPolicy.GetCircuitBreakerPolicyAsync(options.CircuitBreaking, options.DurationOfBreak));
             })
             // TODO: It is necessary given the incompetence of the Refit team. Remove when the issue is fixed. 
-            .AddHttpMessageHandler<HttpRequestExceptionHandler>();
-    }
+            .AddHttpMessageHandler<HttpRequestExceptionHandler>()
+            .Services;
 
     private static IServiceCollection AddLazyTransient<T>(this IServiceCollection services) where T : class
         => services.AddTransient<Lazy<T>>(provider => new(provider.GetRequiredService<T>));
@@ -59,9 +60,8 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection ConfigureOptions<TOptions>(this IServiceCollection services)
         where TOptions : class
         => services
-            .AddOptions<TOptions>()
+            .AddOptionsWithValidateOnStart<TOptions>()
             .BindConfiguration(typeof(TOptions).Name)
             .ValidateDataAnnotations()
-            .ValidateOnStart()
             .Services;
 }

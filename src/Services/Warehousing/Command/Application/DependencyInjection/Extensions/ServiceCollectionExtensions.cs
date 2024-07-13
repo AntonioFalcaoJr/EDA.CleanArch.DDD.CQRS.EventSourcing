@@ -2,7 +2,7 @@ using Application.Abstractions;
 using Application.Services;
 using Application.UseCases.Commands;
 using Application.UseCases.Events;
-using Contracts.Boundaries.Warehouse;
+using Contracts.Boundaries.Warehouse.Inventory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.DependencyInjection.Extensions;

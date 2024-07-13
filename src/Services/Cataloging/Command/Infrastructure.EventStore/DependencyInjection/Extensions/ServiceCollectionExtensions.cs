@@ -44,9 +44,8 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection ConfigureOptions<TOptions>(this IServiceCollection services)
         where TOptions : class
         => services
-            .AddOptions<TOptions>()
+            .AddOptionsWithValidateOnStart<TOptions>()
             .BindConfiguration(typeof(TOptions).Name)
             .ValidateDataAnnotations()
-            .ValidateOnStart()
             .Services;
 }

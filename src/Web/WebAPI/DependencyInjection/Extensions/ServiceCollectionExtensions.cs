@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
             .AddSwaggerGen()
             .AddTransient<IConfigureOptions<SwaggerGenOptions>, ConfigureSwaggerOptions>();
 
-    public static void AddMessageBus(this IServiceCollection services)
+    public static void AddEventBus(this IServiceCollection services)
         => services.AddMassTransit(cfg =>
         {
             cfg.SetKebabCaseEndpointNameFormatter();
@@ -143,10 +143,9 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection ConfigureOptions<TOptions>(this IServiceCollection services)
         where TOptions : class
         => services
-            .AddOptions<TOptions>()
+            .AddOptionsWithValidateOnStart<TOptions>()
             .BindConfiguration(typeof(TOptions).Name)
             .ValidateDataAnnotations()
-            .ValidateOnStart()
             .Services;
 }
 

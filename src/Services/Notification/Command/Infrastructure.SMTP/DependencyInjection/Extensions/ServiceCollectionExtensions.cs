@@ -2,7 +2,7 @@ using System.Net;
 using System.Net.Mail;
 using Application.Abstractions;
 using Application.Abstractions.Gateways;
-using Domain.ValueObject;
+using Domain.ValueObjects;
 using Infrastructure.SMTP.DependencyInjection.Options;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

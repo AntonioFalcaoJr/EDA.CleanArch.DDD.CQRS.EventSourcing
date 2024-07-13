@@ -1,7 +1,7 @@
 using Application.Abstractions;
 using Application.UseCases.Events;
 using Application.UseCases.Queries;
-using Contracts.Boundaries.Warehouse;
+using Contracts.Boundaries.Warehouse.Inventory;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Application.DependencyInjection;
