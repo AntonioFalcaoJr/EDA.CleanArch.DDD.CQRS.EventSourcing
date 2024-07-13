@@ -9,18 +9,18 @@ public abstract class AggregateTests<TAggregate, TId>
     where TAggregate : IAggregateRoot<TId>, new()
     where TId : IIdentifier, new()
 {
-    protected TAggregate AggregateRoot = new();
-    private Action<TAggregate>? _command;
+    protected TAggregate Aggregate = new();
+    private Action<TAggregate> _command = _ => { };
 
-    protected AggregateTests<TAggregate, TId> Given(params IDomainEvent[] events)
+    protected AggregateTests<TAggregate, TId> Given(params IDomainEvent[] stream)
     {
-        AggregateRoot.LoadFromHistory(events);
+        Aggregate.LoadFromStream(stream.ToList());
         return this;
     }
 
     public AggregateTests<TAggregate, TId> When(TAggregate aggregate)
     {
-        AggregateRoot = aggregate;
+        Aggregate = aggregate;
         return this;
     }
 
@@ -30,34 +30,25 @@ public abstract class AggregateTests<TAggregate, TId>
         return this;
     }
 
-    public AggregateTests<TAggregate, TId> Then<TEvent>(params Action<TEvent>[] assertions)
-        where TEvent : class, IDomainEvent
+    public void Then<TEvent>(params Action<TEvent>[] assertions) where TEvent : class, IDomainEvent
     {
-        _command?.Invoke(AggregateRoot);
-
-        AggregateRoot.TryDequeueEvent(out var @event).Should().BeTrue();
+        _command(Aggregate);
+        Aggregate.TryDequeueEvent(out var @event).Should().BeTrue();
         @event.Should().BeOfType<TEvent>();
-
-        foreach (var assertion in assertions)
-            assertion(@event.As<TEvent>());
-
-        return this;
+        foreach (var assertion in assertions) assertion(@event.As<TEvent>());
     }
 
     public void ThenNothing()
     {
-        _command?.Invoke(AggregateRoot);
-        AggregateRoot.TryDequeueEvent(out _).Should().BeFalse();
+        _command(Aggregate);
+        Aggregate.TryDequeueEvent(out _).Should().BeFalse();
     }
 
-    public void ThenThrows<TException>(params Action<TException>[] assertions)
-        where TException : Exception
+    public void ThenThrows<TException>(params Action<TException>[] assertions) where TException : Exception
     {
-        var command = () => _command?.Invoke(AggregateRoot);
+        var command = () => _command(Aggregate);
         var @throw = command.Should().Throw<TException>();
         var exception = @throw.Subject.First();
-
-        foreach (var assertion in assertions)
-            assertion(exception);
+        foreach (var assertion in assertions) assertion(exception);
     }
 }
