@@ -23,24 +23,25 @@
     <!--AutoFixture-->
     <PackageVersion Include="AutoFixture" Version="4.18.0" />
     <PackageVersion Include="AutoFixture.Xunit2" Version="4.18.0" />
-    <PackageVersion Include="BlazorStrap" Version="5.2.100-Preview3b" />
+    <PackageVersion Include="BlazorStrap" Version="5.2.100.61524" />
     <!--BlazorStrap-->
-    <PackageVersion Include="BlazorStrap.V5" Version="5.2.100-Preview3b" />
+    <PackageVersion Include="BlazorStrap.V5" Version="5.2.100" />
     <!--CorrelationId-->
     <PackageVersion Include="CorrelationId" Version="3.0.1" />
     <!--Coverlet-->
     <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+    <PackageVersion Include="Elastic.Clients.Elasticsearch" Version="8.11.0" />
     <!--FluentAssertions-->
     <PackageVersion Include="FluentAssertions" Version="7.0.0-alpha.3" />
-    <PackageVersion Include="FluentResults" Version="3.15.2" />
+    <PackageVersion Include="FluentResults" Version="3.16.0" />
     <!--FluentValidation-->
     <PackageVersion Include="FluentValidation" Version="11.8.0" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
     <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
     <!--Fluxor-->
-    <PackageVersion Include="Fluxor" Version="5.9.1" />
-    <PackageVersion Include="Fluxor.Blazor.Web" Version="5.9.1" />
-    <PackageVersion Include="Fluxor.Blazor.Web.ReduxDevTools" Version="5.9.1" />
+    <PackageVersion Include="Fluxor" Version="6.0.0" />
+    <PackageVersion Include="Fluxor.Blazor.Web" Version="6.0.0" />
+    <PackageVersion Include="Fluxor.Blazor.Web.ReduxDevTools" Version="6.0.0" />
     <!--Grpc-->
     <PackageVersion Include="Google.Protobuf" Version="3.25.1" />
     <PackageVersion Include="Grpc.AspNetCore" Version="2.60.0" />
@@ -48,7 +49,7 @@
     <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.60.0" />
     <PackageVersion Include="Grpc.Net.Client" Version="2.60.0" />
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="2.60.0" />
-    <PackageVersion Include="Grpc.Tools" Version="2.60.0"/>
+    <PackageVersion Include="Grpc.Tools" Version="2.60.0" />
     <!--JsonNet-->
     <PackageVersion Include="JsonNet.ContractResolvers" Version="2.0.0" />
     <PackageVersion Include="LanguageExt.Core" Version="4.4.7" />
@@ -59,11 +60,12 @@
     <PackageVersion Include="MassTransit.RabbitMQ" Version="8.1.2-develop.1590" />
     <!--MediatR-->
     <PackageVersion Include="MediatR" Version="12.1.1" />
+    <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
     <!--MicroElements.Swashbuckle-->
     <PackageVersion Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0-beta.3" />
     <!--Microsoft.AspNetCore-->
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0-alpha.1.23558.19" />
-    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0-alpha.1.23558.19" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0-preview.7.24360.7" />
+    <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0-preview.7.24360.7" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="9.0.0-alpha.1.23560.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="9.0.0-alpha.1.23560.2" />
     <!--Microsoft.EntityFrameworkCore-->
@@ -73,17 +75,19 @@
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.0-alpha.1.23559.7" />
     <!--Microsoft.Extensions-->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.0-preview.3.23174.8" />
-    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0-ci" />
-    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0-ci" />
-    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="9.0.0-alpha.1.23560.2" />
-    <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.0-ci" />
-    <PackageVersion Include="Microsoft.Fast.Components.FluentUI" Version="3.3.0" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="9.0.0-preview.7.24363.3" />
+    <PackageVersion Include="Microsoft.Extensions.Http" Version="9.0.0-preview.7.24363.3" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Polly" Version="9.0.0-preview.7.24362.5" />
+    <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.0-preview.7.24363.3" />
+    <PackageVersion Include="Microsoft.Fast.Components.FluentUI" Version="3.7.8" />
+    <PackageVersion Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="9.0.0-preview.7.24363.3" />
     <!--Microsoft.NET.Test-->
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23531-01" />
-    <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.1-alpha.1.23158.1" />
+    <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0-preview.7.24362.1" />
     <!--MongoDB-->
     <PackageVersion Include="MongoDB.Bson" Version="2.22.0" />
     <PackageVersion Include="MongoDB.Driver" Version="2.22.0" />
+    <PackageVersion Include="NEST" Version="7.17.5" />
     <!--Newtonsoft-->
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <!--OpenTelemetry-->
@@ -95,13 +99,14 @@
     <!--Quartz-->
     <PackageVersion Include="Quartz.Extensions.Hosting" Version="3.7.0" />
     <PackageVersion Include="Quartz.Serialization.Json" Version="3.7.0" />
-    <PackageVersion Include="Refit" Version="7.0.0" />
-    <PackageVersion Include="Refit.HttpClientFactory" Version="7.0.0" />
+    <PackageVersion Include="Refit" Version="7.1.2" />
+    <PackageVersion Include="Refit.HttpClientFactory" Version="7.1.2" />
     <!--Serilog-->
-    <PackageVersion Include="Serilog" Version="3.1.1" />
+    <PackageVersion Include="Serilog" Version="4.0.1-dev-02205" />
     <PackageVersion Include="Serilog.AspNetCore" Version="7.0.1-dev-00320" />
-    <PackageVersion Include="Serilog.Extensions.Hosting" Version="7.0.0" />
-    <PackageVersion Include="Serilog.Settings.Configuration" Version="7.0.2-dev-00546" />
+    <PackageVersion Include="Serilog.Extensions.Hosting" Version="8.0.0" />
+    <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.2" />
+    <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
     <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
     <!--Swashbuckle-->
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
