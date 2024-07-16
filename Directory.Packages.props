@@ -29,8 +29,8 @@
     <!--CorrelationId-->
     <PackageVersion Include="CorrelationId" Version="3.0.1" />
     <!--Coverlet-->
-    <PackageVersion Include="coverlet.collector" Version="6.0.2"/>
-    <PackageVersion Include="Elastic.Clients.Elasticsearch" Version="8.11.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2" />
+    <PackageVersion Include="Elastic.Clients.Elasticsearch" Version="8.14.6" />
     <!--FluentAssertions-->
     <PackageVersion Include="FluentAssertions" Version="7.0.0-alpha.3" />
     <PackageVersion Include="FluentResults" Version="3.16.0" />
@@ -49,7 +49,7 @@
     <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.63.0" />
     <PackageVersion Include="Grpc.Net.Client" Version="2.63.0" />
     <PackageVersion Include="Grpc.Net.ClientFactory" Version="2.63.0" />
-    <PackageVersion Include="Grpc.Tools" Version="2.64.0"/>
+    <PackageVersion Include="Grpc.Tools" Version="2.64.0" />
     <!--JsonNet-->
     <PackageVersion Include="JsonNet.ContractResolvers" Version="2.0.0" />
     <PackageVersion Include="LanguageExt.Core" Version="4.4.9" />
@@ -92,8 +92,8 @@
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
     <!--OpenTelemetry-->
     <PackageVersion Include="OpenTelemetry.Exporter.Jaeger" Version="1.6.0-rc.1" />
-    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0-alpha.1" />
-    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.6.0-beta.2" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.9.0" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.9.0" />
     <!--Polly-->
     <PackageVersion Include="Polly" Version="8.4.1" />
     <!--Quartz-->
@@ -112,10 +112,11 @@
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
     <PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.6.2" />
     <!--System.IdentityModel-->
-    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.1.0-preview" />
+    <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
+    <PackageVersion Include="System.Text.Json" Version="8.0.4" />
     <PackageVersion Include="Ulid" Version="1.3.3" />
     <!--xUnit-->
     <PackageVersion Include="xunit" Version="2.9.0" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2"/>
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2" />
   </ItemGroup>
 </Project>
