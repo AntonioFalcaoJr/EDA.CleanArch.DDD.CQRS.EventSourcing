@@ -5,18 +5,18 @@ namespace Contracts.Boundaries.Notification;
 
 public static class Projection
 {
-    public record NotificationDetails(Guid Id, bool IsDeleted, ulong Version) : IProjection
+    public record NotificationDetails(string Id, bool IsDeleted, ulong Version) : IProjection
     {
         public static implicit operator Services.Communication.Protobuf.NotificationDetails(NotificationDetails notification)
-            => new() { NotificationId = notification.Id.ToString() };
+            => new() { NotificationId = notification.Id };
     }
 
-    public record NotificationMethodDetails(Guid Id, Guid NotificationId, Dto.INotificationOption Option, bool IsDeleted, ulong Version) : IProjection
+    public record NotificationMethodDetails(string Id, Guid NotificationId, Dto.INotificationOption Option, bool IsDeleted, ulong Version) : IProjection
     {
         public static implicit operator Services.Communication.Protobuf.NotificationMethodDetails(NotificationMethodDetails method)
             => new()
             {
-                MethodId = method.Id.ToString(),
+                MethodId = method.Id,
                 NotificationId = method.NotificationId.ToString(),
                 Option = method.Option switch
                 {

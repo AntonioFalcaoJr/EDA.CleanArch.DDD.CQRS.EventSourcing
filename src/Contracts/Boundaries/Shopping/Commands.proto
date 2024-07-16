@@ -6,20 +6,15 @@ import "Abstractions/Abstractions.proto";
 
 service ShoppingCommandService {
   rpc StartShopping(StartShoppingCommand) returns (Abstractions.Protobuf.CommandResponse);
-  rpc AddItem(AddItemCommand) returns (AddItemResponse);
+  rpc AddItem(AddCartItemCommand) returns (Abstractions.Protobuf.CommandResponse);
 }
 
 message StartShoppingCommand {
   string CustomerId = 1;
 }
 
-message AddItemCommand {
+message AddCartItemCommand {
   string CartId = 1;
   string ProductId = 2;
-  string Quantity = 3;
-}
-
-message AddItemResponse {
-  string ItemId = 1;
-  int32 Quantity = 2;
+  int64 Quantity = 3;
 }

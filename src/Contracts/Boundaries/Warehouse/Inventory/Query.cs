@@ -1,7 +1,7 @@
 ﻿using Contracts.Abstractions.Messages;
 using Contracts.Abstractions.Paging;
 
-namespace Contracts.Boundaries.Warehouse;
+namespace Contracts.Boundaries.Warehouse.Inventory;
 
 public static class Query
 {

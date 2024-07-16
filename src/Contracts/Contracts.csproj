@@ -4,6 +4,7 @@
         <PackageReference Include="Ardalis.SmartEnum"/>
         <PackageReference Include="FluentValidation"/>
         <PackageReference Include="MassTransit"/>
+        <PackageReference Include="MediatR.Contracts" />
         <PackageReference Include="MongoDB.Bson"/>
         <PackageReference Include="Newtonsoft.Json"/>
         <PackageReference Include="Google.Protobuf"/>

@@ -12,19 +12,19 @@ public static class Query
             => new(request.Paging);
     }
 
-    public record ListCatalogItemsListItems(Guid CatalogId, Paging Paging) : IQuery
+    public record ListCatalogItemsListItems(string CatalogId, Paging Paging) : IQuery
     {
         public static implicit operator ListCatalogItemsListItems(ListCatalogItemsListItemsRequest request)
             => new(new(request.CatalogId), request.Paging);
     }
 
-    public record ListCatalogItemsCards(Guid CatalogId, Paging Paging) : IQuery
+    public record ListCatalogItemsCards(string CatalogId, Paging Paging) : IQuery
     {
         public static implicit operator ListCatalogItemsCards(ListCatalogItemsCardsRequest request)
             => new(new(request.CatalogId), request.Paging);
     }
 
-    public record GetCatalogItemDetails(Guid CatalogId, Guid ItemId) : IQuery
+    public record GetCatalogItemDetails(string CatalogId, string ItemId) : IQuery
     {
         public static implicit operator GetCatalogItemDetails(GetCatalogItemDetailsRequest request)
             => new(new(request.CatalogId), new(request.ItemId));

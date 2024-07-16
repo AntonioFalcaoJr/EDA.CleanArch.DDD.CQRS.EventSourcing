@@ -2,7 +2,7 @@
 
 public interface IProjection
 {
-    Guid Id { get; }
+    string Id { get; }
     bool IsDeleted { get; }
     ulong Version { get; }
 }

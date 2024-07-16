@@ -6,15 +6,16 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/any.proto";
 
 message Identifier {
-  string Value = 1;
+  string Id = 1;
 }
 
 message CommandResponse{
   oneof OneOf{
-    google.protobuf.Any Success = 1;
-    Accepted Accepted = 2;
-    NotFound NotFound = 3;
-    NoContent NoContent = 4;
+    Ok Ok = 1;
+    Created Created = 2;
+    Accepted Accepted = 3;
+    NotFound NotFound = 4;
+    NoContent NoContent = 5;
   }
 }
 
@@ -44,7 +45,13 @@ message Page{
   bool HasPrevious = 4;
 }
 
+message Ok {}
+
 message Accepted {}
+
+message Created {
+  Identifier Id = 1;
+}
 
 message NotFound {}
 

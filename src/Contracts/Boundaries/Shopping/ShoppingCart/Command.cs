@@ -14,7 +14,7 @@ public static class Command
 
     public record RebuildCartProjection(string Projection) : Message, ICommand;
 
-    public record RemoveCartItem(string CartId, string ProductId) : Message, ICommand;
+    
 
     public record StartShopping(string CustomerId) : Message, ICommand;
 }

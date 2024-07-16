@@ -5,24 +5,24 @@ namespace Contracts.Boundaries.Payment;
 
 public static class Projection
 {
-    public record PaymentDetails(Guid Id, Guid OrderId, Dto.Money Amount, string Status, bool IsDeleted, ulong Version) : IProjection
+    public record PaymentDetails(string Id, Guid OrderId, Dto.Money Amount, string Status, bool IsDeleted, ulong Version) : IProjection
     {
         public static implicit operator Services.Payment.Protobuf.PaymentDetails(PaymentDetails payment)
             => new()
             {
-                PaymentId = payment.Id.ToString(),
+                PaymentId = payment.Id,
                 OrderId = payment.OrderId.ToString(),
                 Amount = payment.Amount,
                 Status = payment.Status
             };
     }
 
-    public record PaymentMethodDetails(Guid Id, Guid PaymentId, Guid OrderId, Dto.Money Amount, Dto.IPaymentOption Option, string Status, bool IsDeleted, ulong Version) : IProjection
+    public record PaymentMethodDetails(string Id, Guid PaymentId, Guid OrderId, Dto.Money Amount, Dto.IPaymentOption Option, string Status, bool IsDeleted, ulong Version) : IProjection
     {
         public static implicit operator Services.Payment.Protobuf.PaymentMethodDetails(PaymentMethodDetails method)
             => new()
             {
-                MethodId = method.Id.ToString(),
+                MethodId = method.Id,
                 PaymentId = method.PaymentId.ToString(),
                 OrderId = method.OrderId.ToString(),
                 Amount = method.Amount,
@@ -37,12 +37,12 @@ public static class Projection
             };
     }
 
-    public record PaymentMethodListItem(Guid Id, Guid OrderId, Dto.Money Amount, string Option, string Status, bool IsDeleted, ulong Version) : IProjection
+    public record PaymentMethodListItem(string Id, Guid OrderId, Dto.Money Amount, string Option, string Status, bool IsDeleted, ulong Version) : IProjection
     {
         public static implicit operator Services.Payment.Protobuf.PaymentMethodListItem(PaymentMethodListItem method)
             => new()
             {
-                MethodId = method.Id.ToString(),
+                MethodId = method.Id,
                 OrderId = method.OrderId.ToString(),
                 Amount = method.Amount,
                 Status = method.Status,
