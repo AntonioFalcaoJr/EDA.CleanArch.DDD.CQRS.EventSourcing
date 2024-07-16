@@ -23,7 +23,7 @@ public class ProjectCartDetailsWhenCartChangedInteractorTests(ShoppingCartServic
             CartId: Guid.NewGuid().ToString(),
             CustomerId: Guid.NewGuid().ToString(),
             Status: "Open",
-            Version: "1");
+            Version: 1);
 
         // When
         await _publishEndpoint.Publish(@event, CancellationToken.None);

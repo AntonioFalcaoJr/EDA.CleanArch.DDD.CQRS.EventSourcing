@@ -23,7 +23,7 @@ public class ShoppingCartUnitTests : AggregateTests<ShoppingCart, CartId>
         Customizations =
         {
             new ElementsBuilder<Currency>(
-                Currency.All.Select(Currency (currency) => new(currency.Key)))
+                Currency.All.Select(currency => (Currency)currency.Key))
         }
     };
 
@@ -54,28 +54,23 @@ public class ShoppingCartUnitTests : AggregateTests<ShoppingCart, CartId>
 
     [Fact]
     public void StartShopping_ShouldRaise_ShoppingStarted()
-    {
-        var expectedVersion = Version.Number(1);
-
-        Given()
+        => Given()
             .When(ShoppingCart.StartShopping(_customerId))
             .Then<DomainEvent.ShoppingStarted>(
                 @event => @event.CartId.Should().NotBe(CartId.Undefined),
                 @event => @event.CustomerId.Should().NotBe(CustomerId.Undefined),
                 @event => @event.CustomerId.Should().Be(_customerId),
                 @event => @event.Status.Should().Be(CartStatus.Open),
-                @event => @event.Version.Should().Be(expectedVersion));
-    }
+                @event => @event.Version.Should().Be(Version.Initial));
 
     [Fact]
     public void AddCartItem_ShouldRaise_CartItemAdded()
     {
         CartItem item = new(_itemId, _productId, _productName, _pictureUri, _sku, _prices, _quantity);
         var expectedPrices = _prices.AsString();
-        var expectedTotals = AggregateRoot.Totals.Project(item);
-        var expectedVersion = Version.Number(2);
+        var expectedTotals = Aggregate.Totals.Project(item);
 
-        Given(new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Number(1)))
+        Given(new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Initial))
             .When(cart => cart.AddItem(item))
             .Then<DomainEvent.CartItemAdded>(
                 @event => @event.CartId.Should().NotBe(CartId.Undefined),
@@ -90,25 +85,27 @@ public class ShoppingCartUnitTests : AggregateTests<ShoppingCart, CartId>
                 @event => @event.Quantity.Should().Be(_quantity),
                 @event => @event.Prices.Should().BeEquivalentTo(expectedPrices),
                 @event => @event.Totals.Should().BeEquivalentTo(expectedTotals),
-                @event => @event.Version.Should().Be(expectedVersion));
+                @event => @event.Version.Should().Be(Version.Number(2)));
     }
 
     [Fact]
     public void AddExistingCartItem_ShouldRaise_CartItemIncreased()
     {
-        CartItem item = new(_itemId, _productId, _productName, _pictureUri, _sku, _prices, Fixture.Create<Quantity>());
-        var itemAddedTotals = AggregateRoot.Totals.Project(_prices, _quantity);
+        var initialQuantity = Fixture.Create<Quantity>();
+        var initialTotals = Aggregate.Totals.Project(_prices, _quantity);
+        CartItem item = new(_itemId, _productId, _productName, _pictureUri, _sku, _prices, initialQuantity);
+        
         var expectedQuantity = item.Quantity + _quantity;
-        var expectedPrices = _prices.AsString();
-        var expectedTotals = AggregateRoot.Totals.Project(_prices, expectedQuantity);
-        var expectedVersion = Version.Number(3);
+        var expectedTotals = Aggregate.Totals.Project(item.Prices, expectedQuantity);
+        var expectedPrices = item.Prices.AsString();
 
         IDomainEvent[] stream =
-        {
-            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Number(1)),
-            new DomainEvent.CartItemAdded(_cartId, _itemId, _productId, _productName, _pictureUri, _sku, _quantity,
-                expectedPrices, itemAddedTotals, Version.Number(2))
-        };
+        [
+            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Initial),
+            
+            new DomainEvent.CartItemAdded(_cartId, _itemId, _productId, _productName, _pictureUri,
+                _sku, _quantity, expectedPrices, initialTotals, Version.Number(2))
+        ];
 
         Given(stream)
             .When(cart => cart.AddItem(item))
@@ -120,7 +117,7 @@ public class ShoppingCartUnitTests : AggregateTests<ShoppingCart, CartId>
                 @event => @event.NewQuantity.Should().Be(expectedQuantity),
                 @event => @event.Prices.Should().BeEquivalentTo(expectedPrices),
                 @event => @event.Totals.Should().BeEquivalentTo(expectedTotals),
-                @event => @event.Version.Should().Be(expectedVersion));
+                @event => @event.Version.Should().Be(Version.Number(3)));
     }
 
     [Fact]
@@ -136,21 +133,21 @@ public class ShoppingCartUnitTests : AggregateTests<ShoppingCart, CartId>
     [Fact]
     public void ChangeCartItemQuantityForUp_ShouldRaise_CartItemIncreased()
     {
-        var itemAddedTotals = AggregateRoot.Totals.Project(_prices, _quantity);
-        var expectedQuantity = _quantity + Fixture.Create<Quantity>();
+        var initialTotals = Aggregate.Totals.Project(_prices, _quantity);
+        var increasedQuantity = _quantity + Fixture.Create<Quantity>();
         var expectedPrices = _prices.AsString();
-        var expectedTotals = AggregateRoot.Totals.Project(_prices, expectedQuantity);
-        var expectedVersion = Version.Number(3);
+        var expectedTotals = Aggregate.Totals.Project(_prices, increasedQuantity);
 
         IDomainEvent[] stream =
-        {
-            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Number(1)),
-            new DomainEvent.CartItemAdded(_cartId, _itemId, _productId, _productName, _pictureUri, _sku, _quantity,
-                expectedPrices, itemAddedTotals, Version.Number(2))
-        };
+        [
+            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Initial),
+            
+            new DomainEvent.CartItemAdded(_cartId, _itemId, _productId, _productName, 
+                _pictureUri, _sku, _quantity, expectedPrices, initialTotals, Version.Number(2))
+        ];
 
         Given(stream)
-            .When(cart => cart.ChangeItemQuantity(_productId, expectedQuantity))
+            .When(cart => cart.ChangeItemQuantity(_productId, increasedQuantity))
             .Then<DomainEvent.CartItemIncreased>(
                 @event => @event.CartId.Should().NotBe(CartId.Undefined),
                 @event => @event.CartId.Should().Be(_cartId),
@@ -158,26 +155,26 @@ public class ShoppingCartUnitTests : AggregateTests<ShoppingCart, CartId>
                 @event => @event.ItemId.Should().Be(_itemId),
                 @event => @event.ProductId.Should().NotBe(ProductId.Undefined),
                 @event => @event.ProductId.Should().Be(_productId),
-                @event => @event.NewQuantity.Should().Be(expectedQuantity),
+                @event => @event.NewQuantity.Should().Be(increasedQuantity),
                 @event => @event.Prices.Should().BeEquivalentTo(expectedPrices),
                 @event => @event.Totals.Should().BeEquivalentTo(expectedTotals),
-                @event => @event.Version.Should().Be(expectedVersion));
+                @event => @event.Version.Should().Be(Version.Number(3)));
     }
 
     [Fact]
     public void ChangeCartItemQuantityForDown_ShouldRaise_CartItemDecreased()
     {
-        var itemAddedTotals = AggregateRoot.Totals.Project(_prices, _quantity);
+        var itemAddedTotals = Aggregate.Totals.Project(_prices, _quantity);
         var expectedQuantity = _quantity - Quantity.Number(1);
         var expectedPrices = _prices.AsString();
-        var expectedTotals = AggregateRoot.Totals.Project(_prices, expectedQuantity);
+        var expectedTotals = Aggregate.Totals.Project(_prices, expectedQuantity);
 
         IDomainEvent[] stream =
-        {
-            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Number(1)),
+        [
+            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Initial),
             new DomainEvent.CartItemAdded(_cartId, _itemId, _productId, _productName, _pictureUri, _sku, _quantity,
                 expectedPrices, itemAddedTotals, Version.Number(2))
-        };
+        ];
 
         Given(stream)
             .When(cart => cart.ChangeItemQuantity(_productId, expectedQuantity))
@@ -197,16 +194,16 @@ public class ShoppingCartUnitTests : AggregateTests<ShoppingCart, CartId>
     [Fact]
     public void ChangeCartItemQuantityForZero_ShouldRaise_CartItemRemoved()
     {
-        var itemAddedTotals = AggregateRoot.Totals.Project(_prices, _quantity);
+        var itemAddedTotals = Aggregate.Totals.Project(_prices, _quantity);
         var expectedPrices = _prices.AsString();
-        var expectedTotals = AggregateRoot.Totals.Project(_prices, Quantity.Zero);
+        var expectedTotals = Aggregate.Totals.Project(_prices, Quantity.Zero);
 
         IDomainEvent[] stream =
-        {
-            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Number(1)),
+        [
+            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Initial),
             new DomainEvent.CartItemAdded(_cartId, _itemId, _productId, _productName, _pictureUri, _sku, _quantity,
                 expectedPrices, itemAddedTotals, Version.Number(2))
-        };
+        ];
 
         Given(stream)
             .When(cart => cart.ChangeItemQuantity(_productId, Quantity.Zero))
@@ -223,27 +220,27 @@ public class ShoppingCartUnitTests : AggregateTests<ShoppingCart, CartId>
     }
 
     [Fact]
-    public void ChangeCartItemQuantityForSame_ShouldThrow_InvalidQuantityException()
+    public void ChangeCartItemQuantityForSame_ShouldDoNothing()
 
     {
-        var itemAddedTotals = AggregateRoot.Totals.Project(_prices, _quantity);
+        var itemAddedTotals = Aggregate.Totals.Project(_prices, _quantity);
         var itemAddedPrices = _prices.AsString();
 
         IDomainEvent[] stream =
-        {
-            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Number(1)),
+        [
+            new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Initial),
             new DomainEvent.CartItemAdded(_cartId, _itemId, _productId, _productName, _pictureUri, _sku, _quantity,
                 itemAddedPrices, itemAddedTotals, Version.Number(2))
-        };
+        ];
 
         Given(stream)
             .When(cart => cart.ChangeItemQuantity(_productId, _quantity))
-            .ThenThrows<Exceptions.InvalidQuantity>();
+            .ThenNothing();
     }
 
     [Fact]
     public void ChangeItemQuantity_WhenNotExist_ShouldThrow_CartNotOpenException()
-        => Given(new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Number(1)))
+        => Given(new DomainEvent.ShoppingStarted(_cartId, _customerId, CartStatus.Open, Version.Initial))
             .When(cart => cart.ChangeItemQuantity(_productId, _quantity))
             .ThenThrows<Exceptions.CartItemNotFound>();
 
