@@ -2,60 +2,77 @@ using System.Linq.Expressions;
 using Application.Abstractions;
 using Contracts.Abstractions;
 using Contracts.Abstractions.Paging;
-using Infrastructure.Projections.Abstractions;
-using Infrastructure.Projections.Pagination;
-using MongoDB.Driver;
-using MongoDB.Driver.Linq;
-using Serilog;
+using Elastic.Clients.Elasticsearch;
 
 namespace Infrastructure.Projections;
 
-public class ProjectionGateway<TProjection>(IMongoDbContext context) : IProjectionGateway<TProjection>
+public class ProjectionGateway<TProjection>(ElasticsearchClient client) : IProjectionGateway<TProjection>
     where TProjection : IProjection
 {
-    private readonly IMongoCollection<TProjection> _collection = context.GetCollection<TProjection>();
-
-    public Task<TProjection?> GetAsync<TId>(TId id, CancellationToken cancellationToken) where TId : struct
+    public Task<TProjection?> GetAsync<TId>(TId id, CancellationToken cancellationToken) 
         => FindAsync(projection => projection.Id.Equals(id), cancellationToken);
 
-    public Task<TProjection?> FindAsync(Expression<Func<TProjection, bool>> predicate, CancellationToken cancellationToken)
-        => _collection.AsQueryable().Where(predicate).FirstOrDefaultAsync(cancellationToken)!;
-
     public ValueTask<IPagedResult<TProjection>> ListAsync(Paging paging, Expression<Func<TProjection, bool>> predicate, CancellationToken cancellationToken)
-        => PagedResult<TProjection>.CreateAsync(paging, _collection.AsQueryable().Where(predicate), cancellationToken);
+    {
+        throw new NotImplementedException();
+    }
 
     public ValueTask<IPagedResult<TProjection>> ListAsync(Paging paging, CancellationToken cancellationToken)
-        => PagedResult<TProjection>.CreateAsync(paging, _collection.AsQueryable(), cancellationToken);
-
-    public Task DeleteAsync(Expression<Func<TProjection, bool>> filter, CancellationToken cancellationToken)
-        => _collection.DeleteManyAsync(filter, cancellationToken);
-
-    public Task DeleteAsync<TId>(TId id, CancellationToken cancellationToken) where TId : struct
-        => _collection.DeleteOneAsync(projection => projection.Id.Equals(id), cancellationToken);
-
-    public Task UpdateFieldAsync<TField, TId>(TId id, ulong version, Expression<Func<TProjection, TField>> field, TField value, CancellationToken cancellationToken) where TId : struct
-        => _collection.UpdateOneAsync(
-            filter: projection => projection.Id.Equals(id) && projection.Version < version,
-            update: new ObjectUpdateDefinition<TProjection>(new()).Set(field, value),
-            cancellationToken: cancellationToken);
+    {
+        throw new NotImplementedException();
+    }
 
     public ValueTask ReplaceInsertAsync(TProjection replacement, CancellationToken cancellationToken)
-        => OnReplaceAsync(replacement, projection => projection.Id == replacement.Id && projection.Version < replacement.Version, cancellationToken);
+    {
+        throw new NotImplementedException();
+    }
 
     public ValueTask RebuildInsertAsync(TProjection replacement, CancellationToken cancellationToken)
-        => OnReplaceAsync(replacement, projection => projection.Id == replacement.Id && projection.Version <= replacement.Version, cancellationToken);
-
-    private async ValueTask OnReplaceAsync(TProjection replacement, Expression<Func<TProjection, bool>> filter, CancellationToken cancellationToken)
     {
-        try
-        {
-            await _collection.ReplaceOneAsync(filter, replacement, new ReplaceOptions { IsUpsert = true }, cancellationToken);
-        }
-        catch (MongoWriteException e) when (e.WriteError.Category is ServerErrorCategory.DuplicateKey)
-        {
-            Log.Warning(
-                "By passing Duplicate Key when inserting {ProjectionType} with Id {Id}",
-                typeof(TProjection).Name, replacement.Id);
-        }
+        throw new NotImplementedException();
     }
+
+    public Task DeleteAsync(Expression<Func<TProjection, bool>> filter, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task DeleteAsync<TId>(TId id, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdateFieldAsync<TField, TId>(TId id, ulong version, Expression<Func<TProjection, TField>> field, TField value,
+        CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
+
+    public async Task<IEnumerable<TProjection>> SearchAsync(string fragment, Paging paging, CancellationToken cancellationToken)
+    {
+        var response = await client.SearchAsync<TProjection>(descriptor
+                => descriptor.Query(query
+                        => query.Match(match
+                            => match.Query(fragment)))
+                    .From(paging.Number)
+                    .Size(paging.Size),
+            cancellationToken).WaitAsync(cancellationToken);
+
+        return response.Documents;
+    }
+
+    public Task IndexAsync(TProjection projection, CancellationToken cancellationToken) 
+        => client.IndexAsync(projection, cancellationToken);
+
+    public async Task<TProjection?> FindAsync(Expression<Func<TProjection, bool>> predicate, CancellationToken cancellationToken)
+    {
+        var response = await client.SearchAsync<TProjection>(descriptor
+                => descriptor.Query(query
+                    => query.MatchAll()).Size(1),
+            cancellationToken);
+
+        return response.Documents.FirstOrDefault();
+    }
+
+
 }

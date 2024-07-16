@@ -16,6 +16,7 @@ public class ProjectCatalogItemListItemWhenCatalogChangedInteractor(IProjectionG
         Projection.CatalogItemListItem listItem = new(
             @event.ItemId,
             @event.CatalogId,
+            "@event.ProductId",
             @event.Product,
             false,
             @event.Version);
@@ -23,9 +24,9 @@ public class ProjectCatalogItemListItemWhenCatalogChangedInteractor(IProjectionG
         await projectionGateway.ReplaceInsertAsync(listItem, cancellationToken);
     }
 
-    public async Task InteractAsync(DomainEvent.CatalogDeleted @event, CancellationToken cancellationToken)
-        => await projectionGateway.DeleteAsync(item => item.CatalogId == @event.CatalogId, cancellationToken);
+    public Task InteractAsync(DomainEvent.CatalogDeleted @event, CancellationToken cancellationToken)
+        => projectionGateway.DeleteAsync(item => item.CatalogId == @event.CatalogId, cancellationToken);
 
-    public async Task InteractAsync(DomainEvent.CatalogItemRemoved @event, CancellationToken cancellationToken)
-        => await projectionGateway.DeleteAsync(@event.ItemId, cancellationToken);
+    public Task InteractAsync(DomainEvent.CatalogItemRemoved @event, CancellationToken cancellationToken)
+        => projectionGateway.DeleteAsync(@event.ItemId, cancellationToken);
 }

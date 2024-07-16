@@ -1,6 +1,7 @@
 using Application.Abstractions;
 using Contracts.Abstractions.Protobuf;
 using Contracts.Boundaries.Cataloging.Catalog;
+using Contracts.Services.Cataloging.Query.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 
@@ -10,7 +11,7 @@ public class CatalogGrpcService(IInteractor<Query.GetCatalogItemDetails, Project
         IPagedInteractor<Query.ListCatalogItemsCards, Projection.CatalogItemCard> listCatalogItemsCardsInteractor,
         IPagedInteractor<Query.ListCatalogsGridItems, Projection.CatalogGridItem> listCatalogsGridItemsInteractor,
         IPagedInteractor<Query.ListCatalogItemsListItems, Projection.CatalogItemListItem> listCatalogItemsListItemsInteractor)
-    : CatalogService.CatalogServiceBase
+    : CatalogingQueryService.CatalogingQueryServiceBase
 {
     public override async Task<GetResponse> GetCatalogItemDetails(GetCatalogItemDetailsRequest request, ServerCallContext context)
     {

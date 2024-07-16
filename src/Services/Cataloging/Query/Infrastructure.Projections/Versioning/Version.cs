@@ -11,14 +11,16 @@ public record Version
     
     private Version(int version)
     {
-        VersionMustBePositive.ThrowIf(version < 0);
+        ArgumentOutOfRangeException.ThrowIfNegative(version);
         _value = (ushort)version;
     }
     
     private Version(string version)
     {
-        VersionFormatException
-            .ThrowIf(!ushort.TryParse(version.Trim(), out _value));
+        ArgumentException.ThrowIfNullOrEmpty(version);
+        
+        if(!ushort.TryParse(version.Trim(), out _value) || _value < 1)
+            throw new ArgumentException("Version must be a positive number.", nameof(version));
     }
 
     public Version Next => new(_value + 1);

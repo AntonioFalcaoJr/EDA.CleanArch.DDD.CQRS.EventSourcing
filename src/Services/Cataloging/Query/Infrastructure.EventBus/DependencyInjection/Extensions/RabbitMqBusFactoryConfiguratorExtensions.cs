@@ -1,4 +1,5 @@
 ﻿using Contracts.Abstractions.Messages;
+using Contracts.Boundaries.Cataloging.Catalog;
 using Infrastructure.EventBus.Consumers.Events;
 using MassTransit;
 

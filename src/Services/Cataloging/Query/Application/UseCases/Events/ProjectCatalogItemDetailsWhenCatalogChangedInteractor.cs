@@ -3,7 +3,7 @@ using Contracts.Boundaries.Cataloging.Catalog;
 
 namespace Application.UseCases.Events;
 
-public interface IProjectCatalogItemDetailsWhenCatalogChangedInteractor : IInteractor<DomainEvent.CatalogItemAdded> { }
+public interface IProjectCatalogItemDetailsWhenCatalogChangedInteractor : IInteractor<DomainEvent.CatalogItemAdded>;
 
 public class ProjectCatalogItemDetailsWhenCatalogChangedInteractor(IProjectionGateway<Projection.CatalogItemDetails> projectionGateway)
     : IProjectCatalogItemDetailsWhenCatalogChangedInteractor

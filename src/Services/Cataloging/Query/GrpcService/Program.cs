@@ -3,7 +3,6 @@ using Application.DependencyInjection;
 using GrpcService;
 using Infrastructure.EventBus.DependencyInjection.Extensions;
 using Infrastructure.EventBus.DependencyInjection.Options;
-using Infrastructure.Projections.DependencyInjection;
 using MassTransit;
 using Microsoft.AspNetCore.HttpLogging;
 using Serilog;
@@ -38,7 +37,6 @@ builder.Host.ConfigureServices((context, services) =>
     services.AddGrpc();
     services.AddEventBus();
     services.AddMessageValidators();
-    services.AddProjections();
     services.AddInteractors();
 
     services.ConfigureEventBusOptions(

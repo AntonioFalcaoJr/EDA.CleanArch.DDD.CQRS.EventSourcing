@@ -1,4 +1,5 @@
 using Application.UseCases.Events;
+using Contracts.Boundaries.Cataloging.Catalog;
 using MassTransit;
 
 namespace Infrastructure.EventBus.Consumers.Events;
