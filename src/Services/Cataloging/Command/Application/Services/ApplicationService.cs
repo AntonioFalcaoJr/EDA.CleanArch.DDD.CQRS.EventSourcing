@@ -1,44 +1,31 @@
-using System.Linq.Expressions;
 using Application.Abstractions;
 using Contracts.Abstractions.Messages;
 using Domain.Abstractions.Aggregates;
 using Domain.Abstractions.EventStore;
 using Domain.Abstractions.Identities;
+using static Domain.Exceptions;
 using Version = Domain.ValueObjects.Version;
 
 namespace Application.Services;
 
-public class ApplicationService(
-    IEventStoreGateway eventStore,
-    EventStoreOptions options,
-    IEventBusGateway eventBus,
-    IUnitOfWork unitOfWork)
-    : IApplicationService
+public class ApplicationService(IEventStoreGateway eventStore, IEventBusGateway eventBus, IUnitOfWork unitOfWork) : IApplicationService
 {
-    public async Task<TAggregate> LoadAggregateAsync<TAggregate, TId>(TId id, CancellationToken cancellationToken)
+    public async Task<TAggregate> LoadAggregateAsync<TAggregate, TId>(TId id, CancellationToken token)
         where TAggregate : class, IAggregateRoot<TId>, new()
         where TId : IIdentifier, new()
     {
-        var snapshot = await eventStore.GetSnapshotAsync<TAggregate, TId>(id, cancellationToken);
-        var events = await eventStore.GetStreamAsync<TAggregate, TId>(id, snapshot?.Version ?? Version.Zero, cancellationToken);
-        return LoadAggregateAsync(snapshot, events);
-    }
-    
-    public async Task<TAggregate> LoadAggregateAsync<TAggregate, TId>(Expression<Func<TAggregate, bool>> predicate, CancellationToken cancellationToken)
-        where TAggregate : class, IAggregateRoot<TId>, new()
-        where TId : IIdentifier, new()
-    {
-        var snapshotPredicate = BuildExpression<TAggregate, Snapshot<TAggregate, TId>, bool>(predicate);
-        var storeEventPredicate = BuildExpression<TAggregate, StoreEvent<TAggregate, TId>, bool>(predicate);
+        var snapshot = await eventStore.GetSnapshotAsync<TAggregate, TId>(id, token);
+        var events = await eventStore.GetStreamAsync<TAggregate, TId>(id, snapshot?.Version ?? Version.Zero, token);
 
-        var snapshot = await eventStore.GetSnapshotAsync(snapshotPredicate, cancellationToken);
-        var events = await eventStore.GetStreamAsync(storeEventPredicate, snapshot?.Version ?? Version.Zero, cancellationToken);
+        AggregateNotFound.ThrowIf(snapshot is null && events.Count is 0);
 
-        return LoadAggregateAsync(snapshot, events);
+        var aggregate = snapshot?.Aggregate ?? new();
+        aggregate.LoadFromStream(events);
+
+        AggregateIsDeleted.ThrowIf(aggregate.IsDeleted);
+
+        return aggregate;
     }
-    
-    public Task ExecuteAsync(Func<CancellationToken, Task> operationAsync, CancellationToken cancellationToken) 
-        => unitOfWork.ExecuteAsync(operationAsync, cancellationToken);
 
     public Task AppendEventsAsync<TAggregate, TId>(TAggregate aggregate, CancellationToken token)
         where TAggregate : IAggregateRoot<TId>
@@ -50,7 +37,7 @@ public class ApplicationService(
                     var storeEvent = StoreEvent<TAggregate, TId>.Create(aggregate, @event);
                     await eventStore.AppendAsync(storeEvent, ct);
 
-                    if (storeEvent.Version % options.SnapshotInterval)
+                    if (storeEvent.Version % Version.Number(5))
                     {
                         var snapshot = Snapshot<TAggregate, TId>.Create(aggregate, storeEvent);
                         await eventStore.AppendAsync(snapshot, ct);
@@ -71,31 +58,4 @@ public class ApplicationService(
 
     public Task SchedulePublishAsync(IDelayedEvent @event, DateTimeOffset scheduledTime, CancellationToken cancellationToken) 
         => eventBus.SchedulePublishAsync(@event, scheduledTime, cancellationToken);
-
-    private static TAggregate LoadAggregateAsync<TAggregate, TId>(Snapshot<TAggregate, TId>? snapshot, List<IDomainEvent> events)
-        where TAggregate : class, IAggregateRoot<TId>, new()
-        where TId : IIdentifier, new()
-    {
-        if (snapshot is null && events is { Count: 0 })
-            throw new InvalidOperationException($"Aggregate {typeof(TAggregate).Name} not found.");
-
-        var aggregate = snapshot?.Aggregate ?? new();
-        aggregate.LoadFromStream(events);
-
-        return aggregate is { IsDeleted: false }
-            ? aggregate
-            : throw new InvalidOperationException($"Aggregate {typeof(TAggregate).Name} is deleted.");
-    }
-    
-    private static Expression<Func<TNewEntity, TResult>> BuildExpression<TOldEntity, TNewEntity, TResult>(Expression<Func<TOldEntity, TResult>> oldExpression)
-    {
-        var newParameter = Expression.Parameter(typeof(TNewEntity), "entity");
-        var newExpressionBody = Expression.Invoke(oldExpression, Expression.Convert(newParameter, typeof(TOldEntity)));
-        return Expression.Lambda<Func<TNewEntity, TResult>>(newExpressionBody, newParameter);
-    }
-}
-
-public record EventStoreOptions
-{
-    public Version SnapshotInterval { get; init; }
 }

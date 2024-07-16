@@ -20,8 +20,9 @@ public class UpdateProductInventoryInteractor(IApplicationService service) :
 
     private async Task UpdateInventoryAsync(InventoryItemId inventoryItemId, Quantity newQuantity, Version newVersion, CancellationToken token)
     {
-        var product = await service.LoadAggregateAsync<Product, ProductId>(product => product.InventoryItemId == inventoryItemId, token);
-        product.UpdateInventory(newQuantity, newVersion);
-        await service.AppendEventsAsync<Product, ProductId>(product, token);
+        // TODO: Review this approach
+        // var product = await service.LoadAggregateAsync<Product, ProductId>(product => product.InventoryItemId == inventoryItemId, token);
+        // product.UpdateInventory(newQuantity, newVersion);
+        // await service.AppendEventsAsync<Product, ProductId>(product, token);
     }
 }
