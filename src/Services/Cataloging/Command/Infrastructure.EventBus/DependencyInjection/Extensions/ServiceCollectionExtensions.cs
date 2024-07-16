@@ -8,23 +8,24 @@ using MassTransit;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Quartz;
 
 namespace Infrastructure.EventBus.DependencyInjection.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    private const string SchedulerQueueName = "scheduler";
+    private const string SchedulerQueueName = "event-scheduler";
 
     public static IServiceCollection AddMessageBusInfrastructure(this IServiceCollection services)
         => services
             .ConfigureOptions()
             .AddEventBusGateway()
-           // .AddQuartz()
+            .AddQuartz()
             .AddMassTransit(cfg =>
             {
                 cfg.SetKebabCaseEndpointNameFormatter();
                 cfg.AddConsumers(Assembly.GetExecutingAssembly());
-               // cfg.AddMessageScheduler(new($"queue:{SchedulerQueueName}"));
+                cfg.AddMessageScheduler(new($"queue:{SchedulerQueueName}"));
 
                 cfg.UsingRabbitMq((context, bus) =>
                 {
@@ -34,9 +35,9 @@ public static class ServiceCollectionExtensions
                         hostAddress: options.ConnectionString,
                         connectionName: $"{options.ConnectionName}.{AppDomain.CurrentDomain.FriendlyName}");
 
-                    // bus.UseInMemoryScheduler(
-                    //     schedulerFactory: context.GetRequiredService<ISchedulerFactory>(),
-                    //     queueName: SchedulerQueueName);
+                    bus.UseInMemoryScheduler(
+                        schedulerFactory: context.GetRequiredService<ISchedulerFactory>(),
+                        queueName: SchedulerQueueName);
 
                     bus.UseMessageRetry(retry
                         => retry.Incremental(
@@ -68,8 +69,8 @@ public static class ServiceCollectionExtensions
                     bus.ConnectConsumeObserver(new LoggingConsumeObserver());
                     bus.ConnectPublishObserver(new LoggingPublishObserver());
                     bus.ConnectSendObserver(new LoggingSendObserver());
-                    
-                    bus.UsePublishFilter(typeof(TraceIdentifierFilter<>),context);
+
+                    bus.UsePublishFilter(typeof(TraceIdentifierFilter<>), context);
 
                     bus.ConfigureEventReceiveEndpoints(context);
                     bus.ConfigureEndpoints(context);
@@ -82,7 +83,7 @@ public static class ServiceCollectionExtensions
     private static IServiceCollection ConfigureOptions(this IServiceCollection services)
         => services
             .ConfigureOptions<EventBusOptions>()
-           // .ConfigureOptions<QuartzOptions>()
+            .ConfigureOptions<QuartzOptions>()
             .ConfigureOptions<MassTransitHostOptions>();
 
     private static IServiceCollection ConfigureOptions<TOptions>(this IServiceCollection services)
