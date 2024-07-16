@@ -26,6 +26,6 @@ public class ChangeDescriptionEffect(IChangeDescriptionApi api) : Effect<ChangeD
 
         dispatcher.Dispatch(response.IsSuccessStatusCode
             ? new CatalogDescriptionChanged(cmd.CatalogId, cmd.NewDescription)
-            : new CatalogDescriptionChangeFailed(cmd.CatalogId, response.Error?.Message ?? response.ReasonPhrase ?? "Unknown error"));
+            : new CatalogDescriptionChangeFailed(cmd.CatalogId, response.Error?.Message ?? "Unknown error"));
     }
 }

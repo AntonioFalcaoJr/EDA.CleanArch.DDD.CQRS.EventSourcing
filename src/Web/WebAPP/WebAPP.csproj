@@ -13,6 +13,7 @@
         <PackageReference Include="Microsoft.Extensions.Http.Polly"/>
         <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations"/>
         <PackageReference Include="Microsoft.Fast.Components.FluentUI" />
+        <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" />
         <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" />
         <PackageReference Include="Refit" />
         <PackageReference Include="Refit.HttpClientFactory" />
@@ -20,6 +21,7 @@
         <PackageReference Include="Serilog.Settings.Configuration"/>
         <PackageReference Include="Serilog.Extensions.Hosting"/>
         <PackageReference Include="FluentResults" />
+        <PackageReference Include="Serilog.Sinks.Console" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\Contracts\Contracts.csproj"/>

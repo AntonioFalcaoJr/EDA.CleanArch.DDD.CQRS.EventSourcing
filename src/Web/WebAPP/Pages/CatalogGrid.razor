@@ -3,8 +3,6 @@
 @using BlazorStrap
 @using Fluxor
 @using WebAPP.Store.Cataloging
-@using BlazorStrap.V5
-@using WebAPP.Abstractions
 @using WebAPP.Store.Cataloging.Queries
 
 @inject IState<CatalogingState> State
@@ -52,10 +50,4 @@ else
 
     private void ListCatalogs(ushort size = 8, ushort number = 1)
         => Dispatcher.Dispatch(new ListCatalogs(new(size, number), _cancellationTokenSource.Token));
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing) _cancellationTokenSource.Dispose();
-        base.Dispose(disposing);
-    }
 }

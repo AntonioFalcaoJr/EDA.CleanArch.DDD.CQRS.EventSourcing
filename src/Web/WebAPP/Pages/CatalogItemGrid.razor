@@ -2,7 +2,6 @@
 
 @using BlazorStrap
 @using Fluxor
-@using WebAPP.Abstractions
 @using WebAPP.Store.Catalogs
 @using WebAPP.Store.Catalogs.Queries
 
@@ -67,11 +66,4 @@
 
     private void ListCatalogItems(string catalogId, ushort size = 8, ushort number = 1)
         => Dispatcher.Dispatch(new ListCatalogItems(catalogId, new(size, number), _cancellationTokenSource.Token));
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing) _cancellationTokenSource.Cancel();
-        base.Dispose(disposing);
-    }
-
 }

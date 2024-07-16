@@ -1,0 +1,82 @@
+@inherits Fluxor.Blazor.Web.Components.FluxorComponent
+
+@using BlazorStrap
+@using Fluxor
+@using WebAPP.Store.Cataloging.Events
+@using WebAPP.Store.Cataloging.Queries
+@using WebAPP.Store.Cataloging
+
+@inject IDispatcher Dispatcher
+@inject IState<CatalogingState> State
+
+<div>
+    <BSContainer
+
+        Container="Container.Fluid"
+        Class="d-flex"
+        PaddingLeftAndRight="Padding.ExtraSmall">
+
+        <BSInput
+            TValue="string"
+            InputType="InputType.Search"
+            @bind-Value="State.Value.Fragment"
+            UpdateOnInput="true"
+            OnValueChange="Search"
+            Placeholder="Looking for products?"/>
+
+        @if (State.Value.IsSearching)
+        {
+            <BSButton Class="bi" Color="BSColor.Dark">
+                <BSSpinner Color="BSColor.Light" Size="Size.Small"/>
+            </BSButton>
+        }
+        else
+        {
+            <BSButton Class="bi bi-search" Color="BSColor.Dark" OnClick="@(() => Search(State.Value.Fragment))"/>
+        }
+
+    </BSContainer>
+
+    <BSDropdown @ref="_dropdown">
+        <Content>
+            @foreach (var product in State.Value.Products)
+            {
+                <BSDropdownItem IsButton="true" OnClick="@(() => SelectProduct(product))">@product.Name</BSDropdownItem>
+            }
+        </Content>
+    </BSDropdown>
+</div>
+
+@code {
+    BSDropdown _dropdown = new();
+    const int SearchSize = 3;
+    CancellationTokenSource _source = new();
+
+    CancellationToken FreshToken
+    {
+        get
+        {
+            _source.Cancel();
+            _source = new();
+            return _source.Token;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        SubscribeToAction<ProductsSearchHit>(_ => _dropdown.ShowAsync());
+        SubscribeToAction<ProductsSearchEmpty>(_ => _dropdown.HideAsync());
+        SubscribeToAction<ProductsSearchEmptied>(_ => _dropdown.HideAsync());
+        SubscribeToAction<ProductsSearchFailed>(_ => _dropdown.HideAsync());
+        SubscribeToAction<ProductSelected>(_ => _dropdown.HideAsync());
+    }
+
+    private void Search(string fragment)
+        => Dispatcher.Dispatch(string.IsNullOrEmpty(fragment)
+            ? new ProductsSearchEmptied(FreshToken)
+            : new SearchProducts(fragment, new(size: SearchSize), FreshToken));
+
+    private void SelectProduct(Product selectedProduct)
+        => Dispatcher.Dispatch(new ProductSelected(selectedProduct));
+}

@@ -3,7 +3,6 @@
 @using BlazorStrap.Shared.Components.OffCanvas
 @using Fluxor
 @using BlazorStrap
-@using WebAPP.DependencyInjection.HttpPolicies
 @using WebAPP.Store.Cataloging
 @using WebAPP.Store.Cataloging.Commands
 @using WebAPP.Store.Cataloging.Events
@@ -32,26 +31,18 @@
                 Color="BSColor.Dark"
                 OnClick="@CreateCatalog"
                 IsDisabled="State.Value.IsCreating">
-                @switch (State.Value.IsCreating)
+                @if (State.Value.IsCreating)
                 {
-                        // TODO, I think we should remove this retry-counter concept 
-                    case true when State.Value.IsRetrying is false:
-                        <BSSpinner SpinnerType="SpinnerType.Grow" Color="BSColor.Light"/>
-                        <p style="margin: auto">Retry number: @State.Value.RetryCount</p>
-                        break;
-                    case true when State.Value.IsRetrying:
-                        <BSSpinner SpinnerType="SpinnerType.Grow" Color="BSColor.Light"/>
-                        <p style="margin: auto">Retry number: @State.Value.RetryCount</p>
-                        break;
-                    default:
-                        <p style="margin: auto">Create</p>
-                        break;
+                    <BSSpinner SpinnerType="SpinnerType.Grow" Color="BSColor.Light"/>
+                }
+                else
+                {
+                    <p style="margin: auto">Create Catalog</p>
                 }
             </BSButton>
             @if (State.Value.HasError)
             {
                 <BSAlert Color="BSColor.Danger" IsDismissible="true">
-                    <BSAlertHeading>Error</BSAlertHeading>
                     <p>@State.Value.Error</p>
                 </BSAlert>
             }
@@ -76,11 +67,5 @@
 
     private Action<BSOffCanvasBase> CancelCatalogCreation()
         => _ => Dispatcher.Dispatch(new CatalogCreationAborted());
-
-    protected override void Dispose(bool disposing)
-    {
-        if (disposing) _cancellationTokenSource.Dispose();
-        base.Dispose(disposing);
-    }
 
 }

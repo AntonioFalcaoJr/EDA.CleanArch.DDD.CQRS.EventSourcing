@@ -8,10 +8,10 @@ public record ProductsSearchHit(IPagedResult<Product> Products);
 
 public class ProductsSearchHitReducer : Reducer<CatalogingState, ProductsSearchHit>
 {
-    public override CatalogingState Reduce(CatalogingState state, ProductsSearchHit action)
+    public override CatalogingState Reduce(CatalogingState state, ProductsSearchHit @event)
         => state with
         {
-            Products = action.Products.Items.ToImmutableList(),
+            Products = @event.Products.Items.ToImmutableList(),
             IsSearching = false,
             Error = string.Empty
         };

@@ -2,9 +2,11 @@ using System.Reflection;
 using BlazorStrap;
 using CorrelationId.DependencyInjection;
 using Fluxor;
+using Fluxor.Blazor.Web.ReduxDevTools;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Serilog;
+using Serilog.Settings.Configuration;
 using WebAPP;
 using WebAPP.DependencyInjection.Extensions;
 

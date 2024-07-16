@@ -4,7 +4,7 @@ using WebAPP.Store.Cataloging.Events;
 
 namespace WebAPP.Store.Cataloging.Commands;
 
-public record DeleteCatalog(string CatalogId, CancellationToken CancellationToken);
+public record DeleteCatalog(string CatalogId, CancellationToken Token);
 
 public class DeleteCatalogReducer : Reducer<CatalogingState, DeleteCatalog>
 {
@@ -15,17 +15,17 @@ public class DeleteCatalogReducer : Reducer<CatalogingState, DeleteCatalog>
 public interface IDeleteCatalogApi
 {
     [Delete("/v1/catalogs/{catalogId}")]
-    Task<IApiResponse> DeleteAsync(string catalogId, CancellationToken cancellationToken);
+    Task<IApiResponse> DeleteAsync(string catalogId, CancellationToken token);
 }
 
 public class DeleteCatalogEffect(IDeleteCatalogApi api) : Effect<DeleteCatalog>
 {
     public override async Task HandleAsync(DeleteCatalog cmd, IDispatcher dispatcher)
     {
-        var response = await api.DeleteAsync(cmd.CatalogId, cmd.CancellationToken);
+        var response = await api.DeleteAsync(cmd.CatalogId, cmd.Token);
 
         dispatcher.Dispatch(response.IsSuccessStatusCode
             ? new CatalogDeleted(cmd.CatalogId)
-            : new CatalogDeletionFailed(response.Error?.Message ?? response.ReasonPhrase ?? "Unknown error"));
+            : new CatalogDeletionFailed(response.Error?.Message ?? "Unknown error"));
     }
 }

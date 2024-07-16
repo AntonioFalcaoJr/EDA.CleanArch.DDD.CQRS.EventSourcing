@@ -26,8 +26,8 @@ public record CatalogItem
     public static implicit operator CatalogItem(Projection.CatalogItemListItem item)
         => new()
         {
-            ItemId = item.Id.ToString(),
-            ProductId = item.ProductId.ToString(),
+            ItemId = item.Id,
+            ProductId = item.ProductId,
             Name = item.Product.Name,
             Description = "Description static on client side" // TODO: solve this
         };

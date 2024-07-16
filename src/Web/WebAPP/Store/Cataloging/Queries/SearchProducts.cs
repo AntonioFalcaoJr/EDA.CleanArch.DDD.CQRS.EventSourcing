@@ -11,7 +11,7 @@ public record SearchProducts(string Fragment, Paging Paging, CancellationToken C
 public class SearchProductsReducer : Reducer<CatalogingState, SearchProducts>
 {
     public override CatalogingState Reduce(CatalogingState state, SearchProducts query)
-        => state with { IsSearching = true, Fragment = query.Fragment };
+        => state with { IsSearching = true, Fragment = query.Fragment, SelectedProduct = new() };
 }
 
 public interface ISearchProductsApi
@@ -30,7 +30,7 @@ public class SearchProductsEffect(ISearchProductsApi api) : Effect<SearchProduct
         {
             { StatusCode: HttpStatusCode.NoContent } => new ProductsSearchEmpty(),
             { IsSuccessStatusCode: true, Content: not null } => new ProductsSearchHit(response.Content),
-            _ => new ProductsSearchFailed(response.Error?.Message ?? response.ReasonPhrase ?? "Unknown error")
+            _ => new ProductsSearchFailed(response.Error?.Message ?? "Unknown error")
         });
     }
 }

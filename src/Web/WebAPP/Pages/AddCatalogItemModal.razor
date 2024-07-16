@@ -2,11 +2,9 @@
 
 @using BlazorStrap
 @using Fluxor
-@using WebAPP.Abstractions
 @using WebAPP.Store.Cataloging
 @using WebAPP.Store.Cataloging.Commands
 @using WebAPP.Store.Cataloging.Events
-@using WebAPP.Store.Cataloging.Queries
 
 @inject IState<CatalogingState> State
 @inject IDispatcher Dispatcher
@@ -15,25 +13,21 @@
     <BSForm Model="State.Value.NewItem" OnValidSubmit="@AddCatalogItem">
         <DataAnnotationsValidator/>
         <BSModalHeader>New Catalog Item</BSModalHeader>
-        <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <BSButton Color="BSColor.Secondary" IsOutlined="true" OnClick="SearchAsync">Search</BSButton>
-            <BSPopover Placement="Placement.Top" Target="popoverTop" MouseOver="true">
-                <Header>Top</Header>
-                <Content>Up top</Content>
-            </BSPopover>
-        </form>
         <BSModalContent>
             <BSValidationSummary/>
             <div class="mb-3">
+            <BSLabel>Search</BSLabel>
+            <Select2/>
+            </div>
+            <div class="mb-3">
                 <BSLabel>Name</BSLabel>
-                <BSInput InputType="InputType.Text" placeholder="Name" @bind-Value="State.Value.NewItem.Name"/>
-                <BSFeedback For="@(() => State.Value.NewItem.Name)"/>
+                <BSInput InputType="InputType.Text" placeholder="Name" @bind-Value="State.Value.SelectedProduct.Name"/>
+                <BSFeedback For="@(() => State.Value.SelectedProduct.Name)"/>
             </div>
             <div class="mb-3">
                 <BSLabel>Description</BSLabel>
-                <BSInput InputType="InputType.TextArea" placeholder="Description" @bind-Value="State.Value.NewItem.Description"/>
-                <BSFeedback For="@(() => State.Value.NewItem.Description)"/>
+                <BSInput InputType="InputType.TextArea" placeholder="Description" @bind-Value="State.Value.SelectedProduct.Description"/>
+                <BSFeedback For="@(() => State.Value.SelectedProduct.Description)"/>
             </div>
         </BSModalContent>
         <BSModalFooter>
@@ -77,8 +71,4 @@
 
     private void AddCatalogItem()
         => Dispatcher.Dispatch(new AddCatalogItem(State.Value.CatalogId, State.Value.NewItem, _cancellationTokenSource.Token));
-
-    private void SearchAsync()
-        => Dispatcher.Dispatch(new SearchProducts("test", new Paging(), _cancellationTokenSource.Token));
-
 }

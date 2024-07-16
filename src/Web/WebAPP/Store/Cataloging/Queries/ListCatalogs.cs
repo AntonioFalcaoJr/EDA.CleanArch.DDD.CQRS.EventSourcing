@@ -21,6 +21,6 @@ public class ListCatalogsEffect(IListCatalogsApi api) : Effect<ListCatalogs>
 
         dispatcher.Dispatch(response is { IsSuccessStatusCode: true, Content: not null }
             ? new CatalogsListed(response.Content)
-            : new CatalogsListingFailed(response.Error?.Message ?? response.ReasonPhrase ?? "Unknown error"));
+            : new CatalogsListingFailed(response.Error?.Message ?? "Unknown error"));
     }
 }
