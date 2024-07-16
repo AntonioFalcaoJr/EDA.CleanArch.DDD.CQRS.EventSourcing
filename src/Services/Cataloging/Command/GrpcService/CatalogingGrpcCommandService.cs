@@ -4,8 +4,6 @@ using Contracts.Services.Cataloging.Command.Protobuf;
 using Domain.Aggregates;
 using Domain.Aggregates.Catalogs;
 using Domain.ValueObjects;
-using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using MediatR;
 
@@ -20,7 +18,7 @@ public class CatalogingGrpcCommandService(ISender sender) : CatalogingCommandSer
 
         CreateCatalog create = new(appId, (Title)cmd.Title, (Description)cmd.Description /*, cmd.ImageUrl*/);
         var catalogId = await sender.Send(create, context.CancellationToken);
-        return Response.Created(catalogId );
+        return Response.Created(catalogId);
     }
 
     public override async Task<CommandResponse> DeleteCatalog(DeleteCatalogCommand cmd, ServerCallContext context)
