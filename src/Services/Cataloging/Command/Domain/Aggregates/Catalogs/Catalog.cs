@@ -24,10 +24,10 @@ public class Catalog : AggregateRoot<CatalogId>
 
     public void Activate()
     {
-        if (Status is CatalogStatusActive)
+        if (Status is CatalogActive)
             throw new InvalidOperationException("Catalog is already active.");
 
-        if (Status is CatalogStatusEmpty)
+        if (Status is CatalogEmpty)
             throw new InvalidOperationException("Catalog is empty.");
 
         RaiseEvent(new DomainEvent.CatalogActivated(Id, CatalogStatus.Active, Version.Next));
@@ -35,7 +35,7 @@ public class Catalog : AggregateRoot<CatalogId>
 
     public void Deactivate()
     {
-        if (Status is CatalogStatusInactive)
+        if (Status is CatalogInactive)
             throw new InvalidOperationException("Catalog is already inactive.");
 
         RaiseEvent(new DomainEvent.CatalogInactivated(Id, CatalogStatus.Inactive, Version.Next));
@@ -58,23 +58,37 @@ public class Catalog : AggregateRoot<CatalogId>
         AppId = (AppId)@event.AppId;
         Title = (Title)@event.Title;
         Description = (Description)@event.Description;
+        Version = (Version)@event.Version;
     }
 
     private void When(DomainEvent.CatalogDescriptionChanged @event)
-        => Description = (Description)@event.Description;
+    {
+        Description = (Description)@event.Description;
+        Version = (Version)@event.Version;
+    }
 
     private void When(DomainEvent.CatalogTitleChanged @event)
-        => Title = (Title)@event.Title;
+    {
+        Title = (Title)@event.Title;
+        Version = (Version)@event.Version;
+    }
 
     private void When(DomainEvent.CatalogActivated @event)
-        => Status = (CatalogStatus)@event.Status;
+    {
+        Status = (CatalogStatus)@event.Status;
+        Version = (Version)@event.Version;
+    }
 
     private void When(DomainEvent.CatalogInactivated @event)
-        => Status = (CatalogStatus)@event.Status;
+    {
+        Status = (CatalogStatus)@event.Status;
+        Version = (Version)@event.Version;
+    }
 
     private void When(DomainEvent.CatalogDeleted @event)
     {
         Status = (CatalogStatus)@event.Status;
         IsDeleted = true;
+        Version = (Version)@event.Version;
     }
 }
