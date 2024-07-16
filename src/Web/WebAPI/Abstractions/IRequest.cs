@@ -11,7 +11,7 @@ public interface IRequest
 
 public interface INewRequest
 {
-    CancellationToken CancellationToken { get; }
+    CancellationToken Token { get; }
 }
 
 public interface ICommand<out TCommand> : IRequest

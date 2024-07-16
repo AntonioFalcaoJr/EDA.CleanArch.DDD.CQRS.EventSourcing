@@ -68,14 +68,9 @@ builder.Services.AddCors(options
             .AllowAnyMethod()));
 
 builder.Services.AddDefaultCorrelationId(options =>
-{
-    options.RequestHeader =
-        options.ResponseHeader =
-            options.LoggingScopeKey = "CorrelationId";
-
     options.UpdateTraceIdentifier =
-        options.AddToLoggingScope = true;
-});
+        options.IncludeInResponse =
+            options.AddToLoggingScope = true);
 
 builder.Services
     .AddFluentValidationAutoValidation()
@@ -104,9 +99,10 @@ builder.Services
         options.SubstituteApiVersionInUrl = true;
     });
 
-builder.Services.AddMessageBus();
+builder.Services.AddEventBus();
 builder.Services.AddGrpcClients();
 builder.Services.AddHealthChecks();
+
 builder.Services.ConfigureOptions();
 
 var app = builder.Build();
@@ -119,13 +115,13 @@ app.UseCorrelationId();
 app.UseSerilogRequestLogging();
 
 app.NewVersionedApi("Accounts").MapAccountApiV1().MapAccountApiV2();
-app.NewVersionedApi("Catalogs").MapCatalogApiV1().MapCatalogApiV2();
+app.NewVersionedApi("Cataloging").MapCatalogApiV1().MapCatalogApiV2();
 app.NewVersionedApi("Communications").MapCommunicationApiV1().MapCommunicationApiV2();
 app.NewVersionedApi("Identities").MapIdentityApiV1().MapIdentityApiV2();
 app.NewVersionedApi("Orders").MapOrderApiV1().MapOrderApiV2();
 app.NewVersionedApi("Payments").MapPaymentApiV1().MapPaymentApiV2();
-app.NewVersionedApi("ShoppingCarts").MapShoppingApiV1().MapShoppingApiV2();
-app.NewVersionedApi("Warehouses").MapWarehouseApiV1().MapWarehouseApiV2();
+app.NewVersionedApi("Shopping").MapShoppingApiV1().MapShoppingApiV2();
+app.NewVersionedApi("Warehousing").MapWarehouseApiV1().MapWarehouseApiV2();
 
 app.MapHealthChecks("/healthz").ShortCircuit();
 

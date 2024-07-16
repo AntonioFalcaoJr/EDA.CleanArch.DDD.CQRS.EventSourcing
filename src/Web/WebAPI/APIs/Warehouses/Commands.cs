@@ -1,4 +1,4 @@
-using Contracts.Boundaries.Warehouse;
+using Contracts.Boundaries.Warehouse.Inventory;
 using Contracts.DataTransferObjects;
 using MassTransit;
 using WebAPI.Abstractions;

@@ -1,10 +1,21 @@
-﻿namespace WebAPI.Abstractions;
+﻿using Microsoft.AspNetCore.Mvc;
 
-public sealed class Problem : IResult
+namespace WebAPI.Abstractions;
+
+public sealed class Problem(string error) : IResult
 {
     public Task ExecuteAsync(HttpContext httpContext)
     {
-        httpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
-        return Task.CompletedTask;
+        ProblemDetails problemDetails = new()
+        {
+            Title = "An error occurred while processing your request.",
+            Detail = error,
+            Instance = httpContext.Request.Path,
+            Status = StatusCodes.Status500InternalServerError,
+            Type = "https://httpstatuses.com/500",
+            Extensions = { ["traceId"] = httpContext.TraceIdentifier }
+        };
+
+        return httpContext.Response.WriteAsJsonAsync(problemDetails);
     }
 }

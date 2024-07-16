@@ -8,6 +8,7 @@ using static Microsoft.AspNetCore.Http.TypedResults;
 using NoContent = Microsoft.AspNetCore.Http.HttpResults.NoContent;
 using NotFound = Microsoft.AspNetCore.Http.HttpResults.NotFound;
 using Accepted = Microsoft.AspNetCore.Http.HttpResults.Accepted;
+using Ok = Microsoft.AspNetCore.Http.HttpResults.Ok;
 using IMessage = Google.Protobuf.IMessage;
 
 namespace WebAPI.Abstractions;
@@ -17,9 +18,9 @@ public static class ApplicationApi
     public static async Task<Results<Accepted, ValidationProblem>> SendCommandAsync<TCommand>(ICommand<TCommand> request)
         where TCommand : class, ICommand
     {
-        return request.IsValid(out var errors) ? await SendAsync() : ValidationProblem(errors);
+        return request.IsValid(out var errors) ? await OnSendAsync() : ValidationProblem(errors);
 
-        async Task<Accepted> SendAsync()
+        async Task<Accepted> OnSendAsync()
         {
             var endpoint = await request.Bus.GetSendEndpoint(Address<TCommand>());
             await endpoint.Send<TCommand>(request, request.CancellationToken);
@@ -27,24 +28,23 @@ public static class ApplicationApi
         }
     }
 
-    public static async Task<Results<Ok<Identifier>, Accepted, NotFound, NoContent, ValidationProblem, Problem>> SendAsync<TClient, TValidator>
+    public static async Task<Results<Ok, Created<Identifier>, NotFound, ValidationProblem, Problem>> SendAsync<TClient, TValidator>
         (IVeryNewCommand<TClient, TValidator> command, Func<TClient, CancellationToken, AsyncUnaryCall<CommandResponse>> sendAsync)
         where TClient : ClientBase
         where TValidator : IValidator, new()
     {
-        return command.IsValid(out var errors) ? await SendAsync() : ValidationProblem(errors);
+        return command.IsValid(out var errors) ? await OnSendAsync() : ValidationProblem(errors);
 
-        async Task<Results<Ok<Identifier>, Accepted, NotFound, NoContent, ValidationProblem, Problem>> SendAsync()
+        async Task<Results<Ok, Created<Identifier>, NotFound, ValidationProblem, Problem>> OnSendAsync()
         {
-            var response = await sendAsync(command.Client, command.CancellationToken);
+            var response = await sendAsync(command.Client, command.Token);
 
             return response.OneOfCase switch
             {
-                CommandResponse.OneOfOneofCase.Success when response.Success.TryUnpack<Identifier>(out var identifier)=> Ok(identifier),
-                CommandResponse.OneOfOneofCase.Accepted => Accepted(string.Empty),
+                CommandResponse.OneOfOneofCase.Ok => Ok(),
+                CommandResponse.OneOfOneofCase.Created => Created("", response.Created.Id),
                 CommandResponse.OneOfOneofCase.NotFound => NotFound(),
-                CommandResponse.OneOfOneofCase.NoContent or CommandResponse.OneOfOneofCase.None => NoContent(),
-                _ => new Problem()
+                _ => new Problem("Unexpected response")
             };
         }
     }
@@ -54,9 +54,9 @@ public static class ApplicationApi
         where TClient : ClientBase<TClient>
         where TResponse : IMessage, new()
     {
-        return query.IsValid(out var errors) ? await ResponseAsync() : ValidationProblem(errors);
+        return query.IsValid(out var errors) ? await OnGetAsync() : ValidationProblem(errors);
 
-        async Task<Results<Ok<TResponse>, NotFound, ValidationProblem, Problem>> ResponseAsync()
+        async Task<Results<Ok<TResponse>, NotFound, ValidationProblem, Problem>> OnGetAsync()
         {
             var response = await getAsync(query.Client, query.CancellationToken);
 
@@ -64,7 +64,7 @@ public static class ApplicationApi
             {
                 GetResponse.OneOfOneofCase.NotFound => NotFound(),
                 GetResponse.OneOfOneofCase.Projection when response.Projection.TryUnpack<TResponse>(out var result) => Ok(result),
-                _ => new Problem()
+                _ => new Problem("Unexpected response")
             };
         }
     }
@@ -74,9 +74,9 @@ public static class ApplicationApi
         where TClient : ClientBase<TClient>
         where TResponse : IMessage, new()
     {
-        return query.IsValid(out var errors) ? await ResponseAsync() : ValidationProblem(errors);
+        return query.IsValid(out var errors) ? await OnListAsync() : ValidationProblem(errors);
 
-        async Task<Results<Ok<PagedResult<TResponse>>, NoContent, ValidationProblem, Problem>> ResponseAsync()
+        async Task<Results<Ok<PagedResult<TResponse>>, NoContent, ValidationProblem, Problem>> OnListAsync()
         {
             var response = await listAsync(query.Client, query.CancellationToken);
 
@@ -84,7 +84,7 @@ public static class ApplicationApi
             {
                 ListResponse.OneOfOneofCase.NoContent => NoContent(),
                 ListResponse.OneOfOneofCase.PagedResult => Ok<PagedResult<TResponse>>(response.PagedResult),
-                _ => new Problem()
+                _ => new Problem("Unexpected response")
             };
         }
     }

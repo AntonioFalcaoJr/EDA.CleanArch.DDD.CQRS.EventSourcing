@@ -23,6 +23,7 @@ public static class WebApplicationExtensions
 
         webApp
             .MapGet("/", () => Results.Redirect("/swagger/index.html"))
-            .WithTags(string.Empty);
+            .ShortCircuit()
+            .ExcludeFromDescription();
     }
 }

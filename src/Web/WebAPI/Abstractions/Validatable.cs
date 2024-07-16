@@ -3,7 +3,7 @@ using Grpc.Core;
 
 namespace WebAPI.Abstractions;
 
-public abstract record TheCommand<TClient, TValidator>(TClient Client, CancellationToken CancellationToken)
+public abstract record TheCommand<TClient, TValidator>(TClient Client, CancellationToken Token)
     : Validatable<TValidator>, INewCommand<TClient>
     where TValidator : IValidator, new()
     where TClient : ClientBase;
