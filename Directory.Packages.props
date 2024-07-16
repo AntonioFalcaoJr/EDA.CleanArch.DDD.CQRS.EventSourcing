@@ -14,55 +14,55 @@
   </PropertyGroup>
   <ItemGroup Label="Packages">
     <!--Ardalis.SmartEnum-->
-    <PackageVersion Include="Ardalis.SmartEnum" Version="7.0.0" />
-    <PackageVersion Include="Ardalis.SmartEnum.AutoFixture" Version="7.0.0" />
-    <PackageVersion Include="Ardalis.SmartEnum.SystemTextJson" Version="7.0.0" />
+    <PackageVersion Include="Ardalis.SmartEnum" Version="8.0.0" />
+    <PackageVersion Include="Ardalis.SmartEnum.AutoFixture" Version="8.0.0" />
+    <PackageVersion Include="Ardalis.SmartEnum.SystemTextJson" Version="8.0.0" />
     <!--Asp.Versioning-->
-    <PackageVersion Include="Asp.Versioning.Http" Version="7.1.0" />
-    <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="7.1.0" />
+    <PackageVersion Include="Asp.Versioning.Http" Version="8.1.0" />
+    <PackageVersion Include="Asp.Versioning.Mvc.ApiExplorer" Version="8.1.0" />
     <!--AutoFixture-->
-    <PackageVersion Include="AutoFixture" Version="4.18.0" />
-    <PackageVersion Include="AutoFixture.Xunit2" Version="4.18.0" />
+    <PackageVersion Include="AutoFixture" Version="4.18.1" />
+    <PackageVersion Include="AutoFixture.Xunit2" Version="4.18.1" />
     <PackageVersion Include="BlazorStrap" Version="5.2.100.61524" />
     <!--BlazorStrap-->
     <PackageVersion Include="BlazorStrap.V5" Version="5.2.100" />
     <!--CorrelationId-->
     <PackageVersion Include="CorrelationId" Version="3.0.1" />
     <!--Coverlet-->
-    <PackageVersion Include="coverlet.collector" Version="6.0.0" />
+    <PackageVersion Include="coverlet.collector" Version="6.0.2"/>
     <PackageVersion Include="Elastic.Clients.Elasticsearch" Version="8.11.0" />
     <!--FluentAssertions-->
     <PackageVersion Include="FluentAssertions" Version="7.0.0-alpha.3" />
     <PackageVersion Include="FluentResults" Version="3.16.0" />
     <!--FluentValidation-->
-    <PackageVersion Include="FluentValidation" Version="11.8.0" />
+    <PackageVersion Include="FluentValidation" Version="11.9.2" />
     <PackageVersion Include="FluentValidation.AspNetCore" Version="11.3.0" />
-    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.8.0" />
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.2" />
     <!--Fluxor-->
     <PackageVersion Include="Fluxor" Version="6.0.0" />
     <PackageVersion Include="Fluxor.Blazor.Web" Version="6.0.0" />
     <PackageVersion Include="Fluxor.Blazor.Web.ReduxDevTools" Version="6.0.0" />
     <!--Grpc-->
-    <PackageVersion Include="Google.Protobuf" Version="3.25.1" />
-    <PackageVersion Include="Grpc.AspNetCore" Version="2.60.0" />
+    <PackageVersion Include="Google.Protobuf" Version="3.27.2" />
+    <PackageVersion Include="Grpc.AspNetCore" Version="2.63.0" />
     <PackageVersion Include="Grpc.AspNetCore.Server" Version="2.56.0-pre1" />
-    <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.60.0" />
-    <PackageVersion Include="Grpc.Net.Client" Version="2.60.0" />
-    <PackageVersion Include="Grpc.Net.ClientFactory" Version="2.60.0" />
-    <PackageVersion Include="Grpc.Tools" Version="2.60.0" />
+    <PackageVersion Include="Grpc.AspNetCore.Server.ClientFactory" Version="2.63.0" />
+    <PackageVersion Include="Grpc.Net.Client" Version="2.63.0" />
+    <PackageVersion Include="Grpc.Net.ClientFactory" Version="2.63.0" />
+    <PackageVersion Include="Grpc.Tools" Version="2.64.0"/>
     <!--JsonNet-->
     <PackageVersion Include="JsonNet.ContractResolvers" Version="2.0.0" />
-    <PackageVersion Include="LanguageExt.Core" Version="4.4.7" />
+    <PackageVersion Include="LanguageExt.Core" Version="4.4.9" />
     <!--MassTransit-->
-    <PackageVersion Include="MassTransit" Version="8.1.2-develop.1590" />
-    <PackageVersion Include="MassTransit.Newtonsoft" Version="8.1.2-develop.1590" />
-    <PackageVersion Include="MassTransit.Quartz" Version="8.1.2-develop.1590" />
-    <PackageVersion Include="MassTransit.RabbitMQ" Version="8.1.2-develop.1590" />
+    <PackageVersion Include="MassTransit" Version="8.2.3" />
+    <PackageVersion Include="MassTransit.Newtonsoft" Version="8.2.3" />
+    <PackageVersion Include="MassTransit.Quartz" Version="8.2.3" />
+    <PackageVersion Include="MassTransit.RabbitMQ" Version="8.2.3" />
     <!--MediatR-->
-    <PackageVersion Include="MediatR" Version="12.1.1" />
+    <PackageVersion Include="MediatR" Version="12.3.0" />
     <PackageVersion Include="MediatR.Contracts" Version="2.0.1" />
     <!--MicroElements.Swashbuckle-->
-    <PackageVersion Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0-beta.3" />
+    <PackageVersion Include="MicroElements.Swashbuckle.FluentValidation" Version="6.0.0" />
     <!--Microsoft.AspNetCore-->
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0-preview.7.24360.7" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0-preview.7.24360.7" />
@@ -82,11 +82,11 @@
     <PackageVersion Include="Microsoft.Fast.Components.FluentUI" Version="3.7.8" />
     <PackageVersion Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="9.0.0-preview.7.24363.3" />
     <!--Microsoft.NET.Test-->
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.9.0-preview-23531-01" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="9.0.0-preview.7.24362.1" />
     <!--MongoDB-->
-    <PackageVersion Include="MongoDB.Bson" Version="2.22.0" />
-    <PackageVersion Include="MongoDB.Driver" Version="2.22.0" />
+    <PackageVersion Include="MongoDB.Bson" Version="2.27.0" />
+    <PackageVersion Include="MongoDB.Driver" Version="2.27.0" />
     <PackageVersion Include="NEST" Version="7.17.5" />
     <!--Newtonsoft-->
     <PackageVersion Include="Newtonsoft.Json" Version="13.0.3" />
@@ -95,27 +95,27 @@
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.7.0-alpha.1" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.6.0-beta.2" />
     <!--Polly-->
-    <PackageVersion Include="Polly" Version="8.1.0" />
+    <PackageVersion Include="Polly" Version="8.4.1" />
     <!--Quartz-->
-    <PackageVersion Include="Quartz.Extensions.Hosting" Version="3.7.0" />
-    <PackageVersion Include="Quartz.Serialization.Json" Version="3.7.0" />
+    <PackageVersion Include="Quartz.Extensions.Hosting" Version="3.11.0" />
+    <PackageVersion Include="Quartz.Serialization.Json" Version="3.11.0" />
     <PackageVersion Include="Refit" Version="7.1.2" />
     <PackageVersion Include="Refit.HttpClientFactory" Version="7.1.2" />
     <!--Serilog-->
     <PackageVersion Include="Serilog" Version="4.0.1-dev-02205" />
-    <PackageVersion Include="Serilog.AspNetCore" Version="7.0.1-dev-00320" />
+    <PackageVersion Include="Serilog.AspNetCore" Version="8.0.1" />
     <PackageVersion Include="Serilog.Extensions.Hosting" Version="8.0.0" />
     <PackageVersion Include="Serilog.Settings.Configuration" Version="8.0.2" />
     <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
-    <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="9.0.3" />
+    <PackageVersion Include="Serilog.Sinks.Elasticsearch" Version="10.0.0" />
     <!--Swashbuckle-->
-    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.5.0" />
+    <PackageVersion Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+    <PackageVersion Include="Swashbuckle.AspNetCore.Newtonsoft" Version="6.6.2" />
     <!--System.IdentityModel-->
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="7.1.0-preview" />
     <PackageVersion Include="Ulid" Version="1.3.3" />
     <!--xUnit-->
-    <PackageVersion Include="xunit" Version="2.6.1" />
-    <PackageVersion Include="xunit.runner.visualstudio" Version="2.5.3" />
+    <PackageVersion Include="xunit" Version="2.9.0" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="2.8.2"/>
   </ItemGroup>
 </Project>
