@@ -2,33 +2,23 @@
 
 namespace Domain.Enumerations;
 
-public class AccountStatus : SmartEnum<AccountStatus>
+public class AccountStatus(string name, int value) : SmartEnum<AccountStatus>(name, value)
 {
-    private AccountStatus(string name, int value)
-        : base(name, value) { }
+    public static readonly Undefined Undefined = new();
+    public static readonly AccountPending Pending = new();
+    public static readonly AccountActive Active = new();
+    public static readonly AccountInactive Inactive = new();
+    public static readonly AccountClosed Closed = new();
 
-    public static readonly AccountStatus Pending = new PendingStatus();
-    public static readonly AccountStatus Active = new ActiveStatus();
-    public static readonly AccountStatus Inactive = new InactiveStatus();
-    public static readonly AccountStatus Closed = new ClosedStatus();
-
-    public static implicit operator AccountStatus(string name)
-        => FromName(name);
-
-    public static implicit operator AccountStatus(int value)
-        => FromValue(value);
-
-    public static implicit operator string(AccountStatus status)
-        => status.Name;
-
-    public static implicit operator int(AccountStatus status)
-        => status.Value;
-
-    public class PendingStatus() : AccountStatus(nameof(Pending), 1);
-
-    public class ActiveStatus() : AccountStatus(nameof(Active), 2);
-
-    public class InactiveStatus() : AccountStatus(nameof(Inactive), 3);
-
-    public class ClosedStatus() : AccountStatus(nameof(Closed), 4);
+    public static explicit operator AccountStatus(int value) => FromValue(value);
+    public static explicit operator AccountStatus(string name) => FromName(name);
+    public static implicit operator int(AccountStatus status) => status.Value;
+    public static implicit operator string(AccountStatus status) => status.Name;
+    public override string ToString() => Name;
 }
+
+public class Undefined() : AccountStatus(nameof(Undefined), 0);
+public class AccountPending() : AccountStatus(nameof(Pending), 1);
+public class AccountActive() : AccountStatus(nameof(Active), 2);
+public class AccountInactive() : AccountStatus(nameof(Inactive), 3);
+public class AccountClosed() : AccountStatus(nameof(Closed), 4);

@@ -1,31 +1,23 @@
-﻿namespace Domain.Enumerations;
+﻿using Ardalis.SmartEnum;
 
-public record CartStatus(string Name, int Value)
+namespace Domain.Enumerations;
+
+public class CartStatus(string name, int value) : SmartEnum<CartStatus>(name, value)
 {
-    public static readonly CartStatusEmpty Empty = new();
-    public static readonly CartStatusOpen Open = new();
-    public static readonly CartStatusAbandoned Abandoned = new();
-    public static readonly CartStatusCheckedOut CheckedOut = new();
+    public static readonly Undefined Undefined = new();
+    public static readonly CartEmpty Empty = new();
+    public static readonly CartOpen Open = new();
+    public static readonly CartAbandoned Abandoned = new();
+    public static readonly CartCheckedOut CheckedOut = new();
 
-    public static explicit operator CartStatus(string name)
-        => typeof(CartStatus).GetField(name)?.GetValue(default) as CartStatus
-           ?? throw new ArgumentException($"Invalid {nameof(CartStatus)} name: {name}");
-
-    public static explicit operator CartStatus(int value)
-        => typeof(CartStatus).GetFields()
-               .Select(field => field.GetValue(default) as CartStatus)
-               .FirstOrDefault(status => status?.Value == value)
-           ?? throw new ArgumentException($"Invalid {nameof(CartStatus)} value: {value}");
-
-    public static implicit operator string(CartStatus status) => status.Name;
+    public static explicit operator CartStatus(int value) => FromValue(value);
+    public static explicit operator CartStatus(string name) => FromName(name);
     public static implicit operator int(CartStatus status) => status.Value;
+    public static implicit operator string(CartStatus status) => status.Name;
     public override string ToString() => Name;
 }
-
-public record CartStatusEmpty() : CartStatus(nameof(Empty), 0);
-
-public record CartStatusOpen() : CartStatus(nameof(Open), 1);
-
-public record CartStatusAbandoned() : CartStatus(nameof(Abandoned), 2);
-
-public record CartStatusCheckedOut() : CartStatus(nameof(CheckedOut), 3);
+public class Undefined() : CartStatus(nameof(Undefined), 0);
+public class CartEmpty() : CartStatus(nameof(Empty), 0);
+public class CartOpen() : CartStatus(nameof(Open), 1);
+public class CartAbandoned() : CartStatus(nameof(Abandoned), 2);
+public class CartCheckedOut() : CartStatus(nameof(CheckedOut), 3);
